@@ -29,7 +29,7 @@ tasks.test {
 val projectVersion: Provider<String> = providers.gradleProperty("version")
 
 val generateBuildInfo by tasks.registering {
-    inputs.property("version", version)
+//    inputs.property("version", version)
     outputs.dir(layout.buildDirectory.dir("generated/sources/build_info"))
     doLast {
         val dir = outputs.files.single().toPath()

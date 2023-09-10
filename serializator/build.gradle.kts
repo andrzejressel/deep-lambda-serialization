@@ -1,9 +1,9 @@
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import java.nio.file.Paths
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
 
 plugins {
+    java
     `jvm-test-suite`
     alias(libs.plugins.kotlin)
 }
@@ -20,22 +20,22 @@ dependencies {
 
 val javaPlugin: JavaPluginExtension = project.extensions.getByType()
 
-val generateBuildInfo by tasks.registering {
+val generateSerializatorBuildInfo by tasks.registering {
     inputs.files(project.configurations.getAt("compileClasspath").files)
-    inputs.files(javaPlugin.sourceSets.getByName("main").output)
     outputs.dir(layout.buildDirectory.dir("generated/sources/build_info"))
+    dependsOn(":lib:compileJava")
     doLast {
         val dir = outputs.files.single().toPath()
 
         val clz = """
                 package pl.andrzejressel.deeplambdaserialization.serializator;
-                
+
                 import java.nio.file.Path;
                 import java.nio.file.Paths;
-                
+
                 public class BuildInfo {
                     public static final Path location = Paths.get("${project.projectDir.toString().replace("\\","\\\\")}");
-                    public static final String dependencies = "${project.configurations.getAt("compileClasspath").files.map { it.toPath() }.joinToString(",").replace("\\","\\\\")}";
+                    public static final String dependencies = "${inputs.files.map { it.toPath() }.joinToString(",").replace("\\","\\\\")}";
                 }
             """.trimIndent()
 
@@ -93,7 +93,7 @@ testing {
             useJUnitJupiter()
             sources {
                 java {
-                    srcDirs(generateBuildInfo)
+                    srcDirs(generateSerializatorBuildInfo)
                 }
             }
         }
