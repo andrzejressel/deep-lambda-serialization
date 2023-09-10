@@ -1,6 +1,6 @@
 [versions]
 # Must match version used by Gradle
-kotlin = { strictly = "1.9.0" }
+kotlin = { strictly = "1.8.20" }
 junit = "5.10.0"
 assertj = "3.24.2"
 ztzip = "1.16"
