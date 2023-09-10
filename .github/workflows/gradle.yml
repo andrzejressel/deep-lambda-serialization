@@ -28,3 +28,8 @@ jobs:
       uses: gradle/gradle-build-action@v2.8.0
       with:
         arguments: check --stacktrace
+    - name: Upload coverage reports to Codecov
+      if: matrix.os == "windows-latest" && matrix.java_version == "17"
+      uses: codecov/codecov-action@v3
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
