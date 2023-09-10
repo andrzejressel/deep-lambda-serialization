@@ -1,0 +1,24 @@
+[versions]
+# Must match version used by Gradle
+kotlin = { strictly = "1.8.20" }
+junit = "5.10.0"
+assertj = "3.24.2"
+ztzip = "1.16"
+proguard = "7.3.2"
+commonslang3 = "3.13.0"
+
+[libraries]
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
+junit-jupiter = { module ="org.junit.jupiter:junit-jupiter" }
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher" }
+commons-codec = "commons-codec:commons-codec:1.16.0"
+assertj-core = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+ztzip = { module = "org.zeroturnaround:zt-zip", version.ref = "ztzip" }
+proguard = { module = "com.guardsquare:proguard-base", version.ref = "proguard" }
+commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref="commonslang3" }
+
+[bundles]
+
+[plugins]
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
