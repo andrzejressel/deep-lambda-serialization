@@ -1,5 +1,6 @@
 [versions]
 # Must match version used by Gradle
+# https://docs.gradle.org/current/userguide/compatibility.html
 kotlin = { strictly = "1.8.20" }
 junit = "5.10.0"
 assertj = "3.24.2"
