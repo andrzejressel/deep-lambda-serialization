@@ -31,6 +31,7 @@ abstract class AbstractLambdaGeneratorTest {
         val javaClzDir: Path = BuildInfo.location.resolve("build/classes/java/testExamples").toAbsolutePath()
         val kotlinClzDir: Path = BuildInfo.location.resolve("build/classes/kotlin/testExamples").toAbsolutePath()
         val dependencies: String = BuildInfo.dependencies
+        val supportLib: String = BuildInfo.supportLib
 
         val classPath = dependencies
             .split(",")
@@ -43,7 +44,12 @@ abstract class AbstractLambdaGeneratorTest {
             .filterNot { it.toString().contains("bytebuddy") }
             .filterNot { it.toString().contains("log4j") }
             .filterNot { it.toString().contains("wrapper") }
-            .toList()
+            .toSet()
+
+        val supportLibList = supportLib
+            .split(",")
+            .map { Paths.get(it) }
+            .toSet()
 
 //        val classPath = System.getProperty("java.class.path").split(';')
 //            .asSequence()
@@ -62,8 +68,9 @@ abstract class AbstractLambdaGeneratorTest {
         val applicationClassPath = setOf(javaClzDir, kotlinClzDir)
 
         return LambdaSerializator(
-            classPath.toList(),
-            applicationClassPath.toList(),
+            classPath,
+            supportLibList,
+            applicationClassPath,
             Paths.get("build", "examples", "jars")
         )
     }

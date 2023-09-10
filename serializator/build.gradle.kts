@@ -1,6 +1,5 @@
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import kotlin.io.path.createDirectories
-import kotlin.io.path.writeText
+import kotlin.io.path.*
 
 plugins {
     java
@@ -20,31 +19,15 @@ dependencies {
 
 val javaPlugin: JavaPluginExtension = project.extensions.getByType()
 
-val generateSerializatorBuildInfo by tasks.registering {
-    inputs.files(project.configurations.getAt("compileClasspath").files)
-    outputs.dir(layout.buildDirectory.dir("generated/sources/build_info"))
+val generateSerializatorBuildInfo = tasks.register<GenerateSerializatorBuildInfo>("generateSerializatorBuildInfo") {
     dependsOn(":lib:compileJava")
-    doLast {
-        val dir = outputs.files.single().toPath()
+    dependencies.set(project.configurations.getAt("compileClasspath").files)
+    supportLib.set(project(":lib").tasks.getAt("compileJava").outputs.files)
+    output.set(layout.buildDirectory.dir("generated/sources/build_info"))
+}
 
-        val clz = """
-                package pl.andrzejressel.deeplambdaserialization.serializator;
-
-                import java.nio.file.Path;
-                import java.nio.file.Paths;
-
-                public class BuildInfo {
-                    public static final Path location = Paths.get("${project.projectDir.toString().replace("\\","\\\\")}");
-                    public static final String dependencies = "${inputs.files.map { it.toPath() }.joinToString(",").replace("\\","\\\\")}";
-                }
-            """.trimIndent()
-
-        dir
-            .resolve("pl/andrzejressel/deeplambdaserialization/serializator")
-            .createDirectories()
-            .resolve("BuildInfo.java")
-            .writeText(clz)
-    }
+project.tasks.named("compileJava") {
+    mustRunAfter(generateSerializatorBuildInfo)
 }
 
 @Suppress("UnstableApiUsage")
@@ -98,4 +81,49 @@ testing {
             }
         }
     }
+}
+
+abstract class GenerateSerializatorBuildInfo : DefaultTask() {
+
+    @get:InputFiles
+    abstract val dependencies: ListProperty<File>
+
+    @get:InputFiles
+    abstract val supportLib: ListProperty<File>
+
+    @get:OutputDirectory
+    abstract val output: DirectoryProperty
+
+    @TaskAction
+    fun invoke() {
+        val dir = outputs.files.single().toPath()
+
+        val deps = dependencies.get().map { it.toPath() }.toSet()
+        val supportLib = supportLib.get()
+            .map { it.toPath() }
+            .filter { it.exists() }
+            .filter { it.isDirectory() || it.extension == "jar" }
+            .toSet()
+        val depsWithoutSupportLib = deps - supportLib
+
+        val clz = """
+                package pl.andrzejressel.deeplambdaserialization.serializator;
+
+                import java.nio.file.Path;
+                import java.nio.file.Paths;
+
+                public class BuildInfo {
+                    public static final Path location = Paths.get("${project.projectDir.toString().replace("\\","\\\\")}");
+                    public static final String dependencies = "${depsWithoutSupportLib.joinToString(",").replace("\\","\\\\")}";
+                    public static final String supportLib = "${supportLib.joinToString(",").replace("\\","\\\\")}";
+                }
+            """.trimIndent()
+
+        dir
+            .resolve("pl/andrzejressel/deeplambdaserialization/serializator")
+            .createDirectories()
+            .resolve("BuildInfo.java")
+            .writeText(clz)
+    }
+
 }

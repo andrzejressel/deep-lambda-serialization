@@ -8,41 +8,33 @@ import pl.andrzejressel.deeplambdaserialization.lib.SerializableFunctionN
 import proguard.*
 import proguard.ClassPath
 import proguard.ClassPathEntry
-import proguard.classfile.*
-import proguard.classfile.util.AccessUtil
+import proguard.classfile.ClassPool
+import proguard.classfile.Clazz
 import proguard.classfile.util.ClassSuperHierarchyInitializer
 import proguard.classfile.util.WarningPrinter
-import proguard.classfile.visitor.AllMethodVisitor
 import proguard.classfile.visitor.ClassPoolFiller
-import proguard.classfile.visitor.ClassVisitor
-import proguard.classfile.visitor.MemberVisitor
 import proguard.io.*
 import java.io.File
 import java.nio.file.Path
-import java.util.*
-import java.util.jar.JarFile
-import kotlin.io.path.*
+import kotlin.io.path.createDirectories
+import kotlin.io.path.exists
+import kotlin.io.path.isDirectory
 
-class LambdaSerializator(private val dependencies: List<Path>, classes: List<Path>, private val output: Path) {
+
+class LambdaSerializator(private val dependencies: Set<Path>, private val supportLib: Set<Path>, classes: Set<Path>, private val output: Path) {
 
     private val programClassPool: ClassPool
     private val serializableFunction: Clazz
     private val classesDir: Path
 
-    //TODO: Or read jar
-    private val supportLib = dependencies
-        .first { it.toString().replace("\\", "/")
-            .contains("lib/build/classes/java/main") }
-
-//    private val supportLib = dependencies.filter { it.isRegularFile() && it.extension == "jar" }.single {
-//        val jarFile = JarFile(it.toFile())
-//        val manifest = jarFile.manifest
-//
-//        manifest?.mainAttributes?.getValue("Deep-lambda-serialization-lib") == "true"
-//    }
-
     init {
         output.createDirectories()
+
+        dependencies.intersect(supportLib).run {
+            if (isNotEmpty()) {
+                throw IllegalArgumentException("dependencies and supportLib are sharing elements: $this")
+            }
+        }
 
         val programClassPool = createProgramClassPool(classes)
         val libraryClassPool = createLibraryClassPool()
@@ -61,7 +53,8 @@ class LambdaSerializator(private val dependencies: List<Path>, classes: List<Pat
     }
 
     fun getClasses(): List<ClassName> {
-        return programClassPool.classes().filter { it.extendsOrImplements(serializableFunction) }.map { ProguardClassName(it.name) }
+        return programClassPool.classes().filter { it.extendsOrImplements(serializableFunction) }
+            .map { ProguardClassName(it.name) }
     }
 
     fun createJar(className: ClassName): File {
@@ -75,18 +68,21 @@ class LambdaSerializator(private val dependencies: List<Path>, classes: List<Pat
         )
         val configuration = Configuration().apply {
             programJars = ClassPath().apply {
-                (dependencies - listOf(supportLib)).filter { it.exists() }.forEach { dep ->
+                (dependencies - supportLib).filter { it.exists() }.forEach { dep ->
                     add(ClassPathEntry(dep.toFile(), false))
                 }
 //                classes.filter { it.exists() }.forEach { dep ->
-                    add(ClassPathEntry(classesDir.toFile(), false))
+                add(ClassPathEntry(classesDir.toFile(), false))
 //                }
                 add(ClassPathEntry(outputFile, true))
             }
             warn = listOf("**", "org.gradle.internal.impldep.**", "org/gradle/internal/impldep/**", "module-info")
             libraryJars = ClassPath().apply {
                 add(ClassPathEntry(File("${System.getProperty("java.home")}/jmods/java.base.jmod"), false))
-                add(ClassPathEntry(supportLib.toFile(), false))
+                supportLib.forEach {
+                    add(ClassPathEntry(it.toFile(), false))
+                }
+//                add(ClassPathEntry(supportLib.toFile(), false))
             }
             //TODO: Replace with shadowing
             optimize = false
@@ -97,7 +93,7 @@ class LambdaSerializator(private val dependencies: List<Path>, classes: List<Pat
 //                SourceFile,LineNumberTable,*Annotation*,EnclosingMethod,Synthetic,LocalVariable*,Runtime*,MethodParameters
 //                """.trimIndent().split(',').toList()
 
-    //            optimize = false
+            //            optimize = false
             keep = buildList {
 /*                add(
                     KeepClassSpecification(
@@ -193,7 +189,7 @@ class LambdaSerializator(private val dependencies: List<Path>, classes: List<Pat
     private fun initializeClassPools(programClassPool: ClassPool, libraryClassPool: ClassPool) {
 
         //TODO: Pipe to debug
-        val myLogger = object: WarningPrinter(null) {
+        val myLogger = object : WarningPrinter(null) {
             override fun note(className: String?, message: String?) {
             }
 
@@ -222,7 +218,7 @@ class LambdaSerializator(private val dependencies: List<Path>, classes: List<Pat
         libraryClassPool.classesAccept(hierarchyInit)
     }
 
-    private fun createProgramClassPool(classes: List<Path>): ClassPool {
+    private fun createProgramClassPool(classes: Set<Path>): ClassPool {
         val programClassPool = ClassPool()
         classes.filter { it.exists() }.forEach { fileName ->
 
@@ -252,7 +248,7 @@ class LambdaSerializator(private val dependencies: List<Path>, classes: List<Pat
             )
         )
 
-        dependencies.filter { it.exists() }.forEach { fileName ->
+        (dependencies + supportLib).filter { it.exists() }.forEach { fileName ->
 
             if (fileName.isDirectory()) {
                 DirectorySource(fileName.toFile()).pumpDataEntries(baseDataEntryReader)
@@ -261,7 +257,12 @@ class LambdaSerializator(private val dependencies: List<Path>, classes: List<Pat
             }
         }
 
-        FileSource(File("${System.getProperty("java.home")}/jmods/java.base.jmod")).pumpDataEntries(JarReader(true, baseDataEntryReader))
+        FileSource(File("${System.getProperty("java.home")}/jmods/java.base.jmod")).pumpDataEntries(
+            JarReader(
+                true,
+                baseDataEntryReader
+            )
+        )
 
         return libraryClassPool
     }
