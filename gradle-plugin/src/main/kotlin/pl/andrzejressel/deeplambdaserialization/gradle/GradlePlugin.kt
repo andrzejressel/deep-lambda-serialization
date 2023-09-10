@@ -22,9 +22,9 @@ class GradlePlugin : Plugin<Project> {
         project.dependencies {
             add("implementation", "pl.andrzejressel.deeplambdaserialization:lib:${BuildInfo.version}")
         }
-        project.tasks.register("deeplambdaserialization") {
-            group = "deeplambdaserialization"
-            doLast { println("Hello from plugin 'pl.andrzejressel.deeplambdaserialization'") }
-        }
+//        project.tasks.register("deeplambdaserialization") {
+//            group = "deeplambdaserialization"
+//            doLast { println("Hello from plugin 'pl.andrzejressel.deeplambdaserialization'") }
+//        }
     }
 }
