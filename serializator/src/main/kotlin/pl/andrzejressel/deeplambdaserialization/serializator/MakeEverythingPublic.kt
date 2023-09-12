@@ -4,6 +4,7 @@ import proguard.classfile.AccessConstants
 import proguard.classfile.Clazz
 import proguard.classfile.ProgramClass
 import proguard.classfile.ProgramMember
+import proguard.classfile.editor.ClassBuilder
 import proguard.classfile.visitor.ClassVisitor
 import proguard.classfile.visitor.MemberVisitor
 

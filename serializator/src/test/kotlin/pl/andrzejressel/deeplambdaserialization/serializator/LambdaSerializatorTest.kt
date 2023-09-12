@@ -30,4 +30,22 @@ class LambdaSerializatorTest {
         assertThat(inst.execute(arrayOf(1, 2))).isEqualTo("3")
     }
 
+    @Test
+    fun shouldMinimizeJavaLambda() {
+        val examples = BuildInfo.location.resolve("build/examples")
+        val className = JavaClassName(examples.resolve("java_basic.txt").readText())
+        val jar = examples.resolve("jars").resolve("${NameUtils.getJarName(className)}.jar")
+
+        val cl = URLClassLoader("test", arrayOf(jar.toFile().toURI().toURL()), this::class.java.classLoader)
+
+        val clz = cl.loadClass(className.javaClassName)
+
+        val constructorMethodType = MethodType.methodType(Void.TYPE)
+        val constructorMethodHandle = MethodHandles.publicLookup().findConstructor(clz, constructorMethodType)
+
+        val inst = constructorMethodHandle.invoke() as SerializableFunctionN
+
+        assertThat(inst.execute(arrayOf(1, 2))).isEqualTo("3")
+    }
+
 }

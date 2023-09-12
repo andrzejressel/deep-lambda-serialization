@@ -21,8 +21,8 @@ val javaPlugin: JavaPluginExtension = project.extensions.getByType()
 
 val generateSerializatorBuildInfo = tasks.register<GenerateSerializatorBuildInfo>("generateSerializatorBuildInfo") {
     dependsOn(":lib:compileJava")
-    dependencies.set(project.configurations.getAt("compileClasspath").files)
-    supportLib.set(project(":lib").tasks.getAt("compileJava").outputs.files)
+    dependencies.set(configurations.runtimeClasspath)
+    supportLib.set(project(":lib").tasks.jar.map { it.outputs.files })
     output.set(layout.buildDirectory.dir("generated/sources/build_info"))
 }
 
