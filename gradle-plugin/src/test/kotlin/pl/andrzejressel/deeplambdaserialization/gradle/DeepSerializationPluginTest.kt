@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Test
 
-class GradlePluginTest {
+class DeepSerializationPluginTest {
     @Test
     fun pluginRegistersATask() {
         // Create a test project and apply the plugin

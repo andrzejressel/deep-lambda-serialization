@@ -5,7 +5,7 @@ import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.Test
 import java.nio.file.Paths
 
-class GradlePluginFunctionalTest {
+class DeepSerializationPluginFunctionalTest {
 
     @Test
     fun canRunTask() {
@@ -15,7 +15,7 @@ class GradlePluginFunctionalTest {
         val result = GradleRunner.create()
             .forwardOutput()
             .withPluginClasspath()
-            .withArguments("build")
+            .withArguments("clean", "build", "deeplambdaserialization")
             .withProjectDir(dir.resolve("projects/basic").toFile())
             .withDebug(true)
             .build()

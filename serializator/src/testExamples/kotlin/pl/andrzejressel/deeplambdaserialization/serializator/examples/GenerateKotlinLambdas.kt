@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test
 import pl.andrzejressel.deeplambdaserialization.lib.SerializableFunction2
 import java.text.MessageFormat
 
-class GenerateKotlinLambdas : AbstractLambdaGeneratorTest() {
+class  GenerateKotlinLambdas : AbstractLambdaGeneratorTest() {
 
     @Test
     fun generateKotlinLambda() {

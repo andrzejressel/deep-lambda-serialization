@@ -30,7 +30,7 @@ tasks.test {
 gradlePlugin {
     val deeplambdaserialization by plugins.creating {
         id = "pl.andrzejressel.deeplambdaserialization"
-        implementationClass = "pl.andrzejressel.deeplambdaserialization.gradle.GradlePlugin"
+        implementationClass = "pl.andrzejressel.deeplambdaserialization.gradle.DeepSerializationPlugin"
         tags.add("serialization")
     }
 }

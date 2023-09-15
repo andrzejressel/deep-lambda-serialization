@@ -17,12 +17,25 @@ dependencies {
     implementation(libs.proguard)
 }
 
-val javaPlugin: JavaPluginExtension = project.extensions.getByType()
+
+val javaPlugin = project.extensions.getByType<JavaPluginExtension>()
+
+val libProject = project(":lib")
+
+val fromLib: Provider<List<File>> = configurations.runtimeClasspath.map {
+    val firstLevel = it.resolvedConfiguration
+        .firstLevelModuleDependencies
+
+    println(firstLevel)
+    firstLevel.first {
+        it.moduleGroup == "pl.andrzejressel.deeplambdaserialization" && it.moduleName == "lib"
+    }.allModuleArtifacts.map { it.file }
+}
 
 val generateSerializatorBuildInfo = tasks.register<GenerateSerializatorBuildInfo>("generateSerializatorBuildInfo") {
-    dependsOn(":lib:compileJava")
+    dependsOn(":lib:jar")
     dependencies.set(configurations.runtimeClasspath)
-    supportLib.set(project(":lib").tasks.jar.map { it.outputs.files })
+    supportLib.set(fromLib)
     output.set(layout.buildDirectory.dir("generated/sources/build_info"))
 }
 
@@ -96,15 +109,8 @@ abstract class GenerateSerializatorBuildInfo : DefaultTask() {
 
     @TaskAction
     fun invoke() {
-        val dir = outputs.files.single().toPath()
 
-        val deps = dependencies.get().map { it.toPath() }.toSet()
-        val supportLib = supportLib.get()
-            .map { it.toPath() }
-            .filter { it.exists() }
-            .filter { it.isDirectory() || it.extension == "jar" }
-            .toSet()
-        val depsWithoutSupportLib = deps - supportLib
+        val dir = outputs.files.single().toPath()
 
         val clz = """
                 package pl.andrzejressel.deeplambdaserialization.serializator;
@@ -114,8 +120,8 @@ abstract class GenerateSerializatorBuildInfo : DefaultTask() {
 
                 public class BuildInfo {
                     public static final Path location = Paths.get("${project.projectDir.toString().replace("\\","\\\\")}");
-                    public static final String dependencies = "${depsWithoutSupportLib.joinToString(",").replace("\\","\\\\")}";
-                    public static final String supportLib = "${supportLib.joinToString(",").replace("\\","\\\\")}";
+                    public static final String dependencies = "${(dependencies.get() - supportLib.get().toSet()).joinToString(",").replace("\\","\\\\")}";
+                    public static final String supportLib = "${supportLib.get().joinToString(",").replace("\\","\\\\")}";
                 }
             """.trimIndent()
 
