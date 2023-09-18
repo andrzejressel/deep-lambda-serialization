@@ -7,6 +7,7 @@ plugins {
     `java-library`
     `jvm-test-suite`
     `maven-publish`
+    jacoco
 }
 
 repositories {
@@ -130,4 +131,15 @@ tasks.jar {
             "deep-lambda-serialization-lib" to "true"
         )
     }
+}
+
+tasks.jacocoTestReport {
+    reports {
+        xml.required = true
+        html.required = false
+    }
+}
+
+tasks.named("check") {
+    dependsOn("jacocoTestReport")
 }

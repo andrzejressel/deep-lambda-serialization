@@ -6,6 +6,7 @@ plugins {
     `jvm-test-suite`
     alias(libs.plugins.kotlin)
     `maven-publish`
+    jacoco
 }
 
 repositories {
@@ -158,4 +159,15 @@ abstract class GenerateSerializatorBuildInfo : DefaultTask() {
             .writeText(clz)
     }
 
+}
+
+tasks.jacocoTestReport {
+    reports {
+        xml.required = true
+        html.required = false
+    }
+}
+
+tasks.named("check") {
+    dependsOn("jacocoTestReport")
 }
