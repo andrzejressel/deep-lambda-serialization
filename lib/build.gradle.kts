@@ -27,10 +27,8 @@ tasks.test {
     }
 }
 
-val projectVersion: Provider<String> = providers.gradleProperty("version")
-
 val generateBuildInfo by tasks.registering {
-    inputs.property("version", projectVersion)
+    inputs.property("version", parent!!.version)
     outputs.dir(layout.buildDirectory.dir("generated/sources/build_info"))
     doLast {
         val dir = outputs.files.single().toPath()
@@ -99,14 +97,29 @@ sourceSets {
     }
 }
 
+val mvnGroupId = parent!!.group.toString()
+val mvnArtifactId = name
+val mvnVersion = parent!!.version.toString()
+
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            groupId = property("group")!!.toString()
-            artifactId = "lib"
-            version = projectVersion.get()
-
             from(components["java"])
+
+            groupId = mvnGroupId
+            artifactId = mvnArtifactId
+            version = mvnVersion
+        }
+    }
+    repositories {
+        mavenLocal()
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/andrzejressel/deep-java-code-serialization")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
         }
     }
 }

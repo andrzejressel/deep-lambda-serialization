@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    implementation("pl.andrzejressel.deeplambdaserialization:lib:0.0.1")
+    implementation("pl.andrzejressel.djcs:lib:DEV")
 }
 
 configure<DeepSerializationPluginExtension> {

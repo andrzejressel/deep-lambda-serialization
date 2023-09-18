@@ -1,4 +1,4 @@
-name: Java CI with Gradle
+name: CI
 
 on:
   push:
@@ -27,4 +27,9 @@ jobs:
     - name: Build with Gradle
       uses: gradle/gradle-build-action@v2.8.0
       with:
-        arguments: check --stacktrace
+        arguments: check
+    - name: Upload coverage reports to Codecov
+      if: matrix.os == 'ubuntu-latest' && matrix.java_version == '11'
+      uses: codecov/codecov-action@v3
+      env:
+        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}

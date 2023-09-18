@@ -42,17 +42,29 @@ val generateSerializatorBuildInfo = tasks.register<GenerateSerializatorBuildInfo
 project.tasks.named("compileJava") {
     mustRunAfter(generateSerializatorBuildInfo)
 }
-val projectVersion: Provider<String> = providers.gradleProperty("version")
+
+val mvnGroupId = parent!!.group.toString()
+val mvnArtifactId = name
+val mvnVersion = parent!!.version.toString()
 
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            groupId = property("group")!!.toString()
-            artifactId = "serializator"
-            version = projectVersion.get()
-
             from(components["java"])
-//            from(components["kotlin"])
+
+            groupId = mvnGroupId
+            artifactId = mvnArtifactId
+            version = mvnVersion
+        }
+    }
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/andrzejressel/deep-java-code-serialization")
+            credentials {
+                username = System.getenv("GITHUB_ACTOR")
+                password = System.getenv("GITHUB_TOKEN")
+            }
         }
     }
 }

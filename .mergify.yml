@@ -1,0 +1,19 @@
+queue_rules:
+  - name: default
+    conditions: []
+
+pull_request_rules:
+  - name: automatic merge for main when CI passes
+    conditions:
+      - base=main
+      - or:
+        - label=ready-to-merge
+        - label=dependencies
+    actions:
+      queue:
+        name: default
+  - name: delete head branch after merge
+    conditions:
+      - merged
+    actions:
+      delete_head_branch:

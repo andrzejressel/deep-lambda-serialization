@@ -42,7 +42,7 @@ class DeepSerializationPlugin : Plugin<Project> {
         println(allClasses)
 
         project.dependencies {
-            add(implementation.name, "pl.andrzejressel.deeplambdaserialization:lib:${BuildInfo.version}")
+            add(implementation.name, "pl.andrzejressel.djcs:lib:${BuildInfo.version}")
         }
 
         val ext = project.extensions.create<DeepSerializationPluginExtension>("deepSerializationPluginExtension")
