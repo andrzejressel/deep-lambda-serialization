@@ -1,9 +1,8 @@
 package pl.andrzejressel.deeplambdaserialization.gradle
 
-import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.Project
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.tasks.InputFiles
-import org.gradle.api.tasks.OutputDirectory
 import java.io.File
 
 interface DeepSerializationPluginExtension {
@@ -11,6 +10,9 @@ interface DeepSerializationPluginExtension {
     val dependencies: ListProperty<File>
     @get:InputFiles
     val classes: ListProperty<File>
-    @get:OutputDirectory
-    val output: DirectoryProperty
+
+    fun addProject(project: Project) {
+
+    }
+
 }

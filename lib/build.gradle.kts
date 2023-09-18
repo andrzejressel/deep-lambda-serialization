@@ -17,6 +17,7 @@ dependencies {
     testImplementation(platform(libs.junit.bom))
     testRuntimeOnly(libs.junit.platform.launcher)
     testImplementation(libs.junit.jupiter)
+    implementation(libs.jetbrains.annotations)
 }
 
 tasks.test {

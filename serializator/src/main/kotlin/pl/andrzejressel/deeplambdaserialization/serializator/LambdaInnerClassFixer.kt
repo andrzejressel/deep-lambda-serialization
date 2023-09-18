@@ -30,23 +30,31 @@ object LambdaInnerClassFixer {
         initializeClassPools(programClassPool, libraryClassPool)
 
         val clz = programClassPool.getClass(className.proguardClassName) as ProgramClass
-        val parentClz = clz.superClass as LibraryClass
+        val parentClzBase = clz.superClass
 
-        val parentClzInit = parentClz.methods.first { it.getName(clz) == "<init>" }
+        val parentClzInit = when(parentClzBase) {
+            is ProgramClass -> parentClzBase.methods.first { it.getName(parentClzBase) == "<init>" }
+            is LibraryClass -> parentClzBase.methods.first { it.getName(parentClzBase) == "<init>" }
+            else -> throw IllegalStateException("parentClzBase has invalid class: ${parentClzBase.javaClass}")
+        }
 
-        val cb = ClassBuilder(clz)
-            .addMethod(
-                AccessConstants.PUBLIC,
-                "<init>",
-                "()V",
-                50
-            ) { code ->
-                code
-                    .aload_0()
-                    .invokespecial(parentClz, parentClzInit)
-                    .return_()
-            }
-            .programClass
+        val cb = if (clz.findMethod("<init>", "()V") == null) {
+            ClassBuilder(clz)
+                .addMethod(
+                    AccessConstants.PUBLIC,
+                    "<init>",
+                    "()V",
+                    50
+                ) { code ->
+                    code
+                        .aload_0()
+                        .invokespecial(parentClzBase, parentClzInit)
+                        .return_()
+                }
+                .programClass
+        } else {
+            clz
+        }
 
         programClassPool.addClass(cb)
         initializeClassPools(programClassPool, libraryClassPool)

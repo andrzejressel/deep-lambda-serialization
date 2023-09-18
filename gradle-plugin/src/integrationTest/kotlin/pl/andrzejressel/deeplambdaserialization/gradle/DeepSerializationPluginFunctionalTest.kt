@@ -15,10 +15,12 @@ class DeepSerializationPluginFunctionalTest {
         val result = GradleRunner.create()
             .forwardOutput()
             .withPluginClasspath()
-            .withArguments("clean", "build", "deeplambdaserialization")
+            .withArguments("clean", "build", "deeplambdaserialization", "run", "--stacktrace")
             .withProjectDir(dir.resolve("projects/basic").toFile())
             .withDebug(true)
             .build()
+
+
 
         // Verify the result
 //        assertThat(result.output)

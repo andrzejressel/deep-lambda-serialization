@@ -5,6 +5,7 @@ plugins {
     java
     `jvm-test-suite`
     alias(libs.plugins.kotlin)
+    `maven-publish`
 }
 
 repositories {
@@ -12,7 +13,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":lib"))
+    api(project(":lib"))
     implementation(libs.ztzip)
     implementation(libs.proguard)
 }
@@ -26,9 +27,8 @@ val fromLib: Provider<List<File>> = configurations.runtimeClasspath.map {
     val firstLevel = it.resolvedConfiguration
         .firstLevelModuleDependencies
 
-    println(firstLevel)
     firstLevel.first {
-        it.moduleGroup == "pl.andrzejressel.deeplambdaserialization" && it.moduleName == "lib"
+        it.moduleGroup == libProject.group && it.moduleName == libProject.name
     }.allModuleArtifacts.map { it.file }
 }
 
@@ -41,6 +41,20 @@ val generateSerializatorBuildInfo = tasks.register<GenerateSerializatorBuildInfo
 
 project.tasks.named("compileJava") {
     mustRunAfter(generateSerializatorBuildInfo)
+}
+val projectVersion: Provider<String> = providers.gradleProperty("version")
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = property("group")!!.toString()
+            artifactId = "serializator"
+            version = projectVersion.get()
+
+            from(components["java"])
+//            from(components["kotlin"])
+        }
+    }
 }
 
 @Suppress("UnstableApiUsage")

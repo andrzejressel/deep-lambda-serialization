@@ -2,14 +2,23 @@ import pl.andrzejressel.deeplambdaserialization.gradle.DeepSerializationPluginEx
 
 plugins {
     java
+    application
     id("pl.andrzejressel.deeplambdaserialization")
 }
 
 repositories {
+    mavenCentral()
     mavenLocal()
 }
 
+dependencies {
+    implementation("pl.andrzejressel.deeplambdaserialization:lib:0.0.1")
+}
+
 configure<DeepSerializationPluginExtension> {
-    dependencies.set(configurations.runtimeClasspath)
-    output.set(layout.buildDirectory.dir("generated/sources/build_info"))
+    classes.set(configurations.runtimeClasspath)
+}
+
+application {
+    mainClass.set("com.example.project.Main")
 }

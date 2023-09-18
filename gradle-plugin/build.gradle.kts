@@ -8,6 +8,7 @@ plugins {
     `kotlin-dsl`
     `jvm-test-suite`
     alias(libs.plugins.kotlin)
+    `maven-publish`
 }
 
 repositories {
@@ -15,7 +16,7 @@ repositories {
 }
 
 dependencies {
-    implementation(project(":lib"))
+    implementation(project(":serializator"))
     implementation(libs.ztzip)
     implementation(libs.proguard)
 }
@@ -73,6 +74,12 @@ testing {
             }
             useJUnitJupiter()
         }
+    }
+}
+
+publishing {
+    repositories {
+        mavenLocal()
     }
 }
 

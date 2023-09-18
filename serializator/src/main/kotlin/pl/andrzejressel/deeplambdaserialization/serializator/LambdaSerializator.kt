@@ -56,7 +56,8 @@ class LambdaSerializator(
 
         serializableFunction =
             libraryClassPool.getClass(SerializableFunctionN::class.java.name.replace('.', '/'))
-                ?: throw RuntimeException("Cannot find SerializableFunctionN in libraryClassPool")
+                ?: programClassPool.getClass(SerializableFunctionN::class.java.name.replace('.', '/'))
+                        ?: throw RuntimeException("Cannot find SerializableFunctionN")
         this.programClassPool = programClassPool
     }
 
