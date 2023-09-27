@@ -16,3 +16,18 @@ version = if(details.isCleanTag) {
 } else {
     "DEV"
 }
+
+allprojects {
+    repositories {
+        maven {
+            url = uri("https://maven.pkg.github.com/andrzejressel/simple-java-serialization")
+            credentials(HttpHeaderCredentials::class) {
+                name = "Authorization"
+                value = "Bearer ${project.findProperty("gpr.token") as String}"
+            }
+            authentication {
+                create<HttpHeaderAuthentication>("header")
+            }
+        }
+    }
+}

@@ -19,6 +19,7 @@ dependencies {
     testRuntimeOnly(libs.junit.platform.launcher)
     testImplementation(libs.junit.jupiter)
     implementation(libs.jetbrains.annotations)
+    implementation("pl.andrzejressel.sjs:serializator:0.0.1")
 }
 
 tasks.test {
@@ -66,14 +67,20 @@ val generateSerializableFunction by tasks.registering {
             val arguments2 = alphabet.take(i).mapIndexed { index, c ->
                 "(${c}) args[${index}]"
             }.joinToString(separator = ", ")
+            val serializatorFields = alphabet.take(i).joinToString(separator = "\n") { c ->
+                "                    protected Serializator<$c> ${c.lowercaseChar()};"
+            }
 
             Files.createDirectories(dir)
 
             val clz = """
                 package pl.andrzejressel.deeplambdaserialization.lib;
                 
+                import pl.andrzejressel.sjs.serializator.Serializator;
+                
                 public abstract class SerializableFunction${i}<$genericClasses> extends SerializableFunctionN {
                     public abstract RET execute(${arguments});
+$serializatorFields
                     @Override
                     public final Object execute(Object[] args) {
                         if (args.length != ${i}) {

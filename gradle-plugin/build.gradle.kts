@@ -1,5 +1,4 @@
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import java.nio.file.Paths
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
 
@@ -37,6 +36,28 @@ gradlePlugin {
     }
 }
 
+val generateIntegrationTestBuildInfo by tasks.registering {
+    inputs.property("token", project.findProperty("gpr.token") as String)
+    outputs.dir(layout.buildDirectory.dir("generated/sources/build_info"))
+    doLast {
+        val dir = outputs.files.single().toPath()
+
+        val clz = """
+                package pl.andrzejressel.deeplambdaserialization.gradle.integrationtest;
+                
+                public class BuildInfo {
+                    public static String token = "${this.inputs.properties["token"]}";
+                }
+            """.trimIndent()
+
+        dir
+            .resolve("pl/andrzejressel/deeplambdaserialization/gradle/integrationtest")
+            .createDirectories()
+            .resolve("BuildInfo.java")
+            .writeText(clz)
+    }
+}
+
 @Suppress("UnstableApiUsage")
 testing {
     suites {
@@ -45,6 +66,12 @@ testing {
         register<JvmTestSuite>("integrationTest") {
             dependencies {
                 implementation(gradleTestKit())
+            }
+
+            sources {
+                java {
+                    srcDirs(generateIntegrationTestBuildInfo)
+                }
             }
 
             gradlePlugin.testSourceSets(this.sources)

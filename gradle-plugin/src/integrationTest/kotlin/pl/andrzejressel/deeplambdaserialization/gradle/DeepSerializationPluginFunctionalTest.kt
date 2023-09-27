@@ -3,6 +3,7 @@ package pl.andrzejressel.deeplambdaserialization.gradle
 import org.assertj.core.api.Assertions.assertThat
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.Test
+import pl.andrzejressel.deeplambdaserialization.gradle.integrationtest.BuildInfo
 import java.nio.file.Paths
 
 class DeepSerializationPluginFunctionalTest {
@@ -15,11 +16,10 @@ class DeepSerializationPluginFunctionalTest {
         val result = GradleRunner.create()
             .forwardOutput()
             .withPluginClasspath()
-            .withArguments("clean", "build", "deeplambdaserialization", "run", "--stacktrace")
+            .withArguments("-Pgpr.token=${BuildInfo.token}", "clean", "build", "deeplambdaserialization", "run", "--stacktrace")
             .withProjectDir(dir.resolve("projects/basic").toFile())
             .withDebug(true)
             .build()
-
 
 
         // Verify the result
