@@ -20,14 +20,14 @@ class LambdaSerializatorTest {
 
         val cl = URLClassLoader("test", arrayOf(jar.toFile().toURI().toURL()), this::class.java.classLoader)
 
-        val clz = cl.loadClass(className.javaClassName)
+        val clz = cl.loadClass("EntryPoint")
 
-        val constructorMethodType = MethodType.methodType(Void.TYPE)
-        val constructorMethodHandle = MethodHandles.publicLookup().findConstructor(clz, constructorMethodType)
+        val constructorMethodType = MethodType.methodType(Any::class.java, Array<Any>::class.java)
+        val constructorMethodHandle = MethodHandles.publicLookup().findStatic(clz, "run", constructorMethodType)
 
-        val inst = constructorMethodHandle.invoke() as SerializableFunctionN
+        val inst = constructorMethodHandle.invoke(arrayOf(1, 2))
 
-        assertThat(inst.execute(arrayOf(1, 2))).isEqualTo("3")
+        assertThat(inst).isEqualTo("3")
     }
 
     @Test
@@ -38,14 +38,14 @@ class LambdaSerializatorTest {
 
         val cl = URLClassLoader("test", arrayOf(jar.toFile().toURI().toURL()), this::class.java.classLoader)
 
-        val clz = cl.loadClass(className.javaClassName)
+        val clz = cl.loadClass("EntryPoint")
 
-        val constructorMethodType = MethodType.methodType(Void.TYPE)
-        val constructorMethodHandle = MethodHandles.publicLookup().findConstructor(clz, constructorMethodType)
+        val constructorMethodType = MethodType.methodType(Any::class.java, Array<Any>::class.java)
+        val constructorMethodHandle = MethodHandles.publicLookup().findStatic(clz, "run", constructorMethodType)
 
-        val inst = constructorMethodHandle.invoke() as SerializableFunctionN
+        val inst = constructorMethodHandle.invoke(arrayOf(1, 2))
 
-        assertThat(inst.execute(arrayOf(1, 2))).isEqualTo("3")
+        assertThat(inst).isEqualTo("3")
     }
 
 }

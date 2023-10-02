@@ -2,10 +2,7 @@ package pl.andrzejressel.deeplambdaserialization.serializator
 
 import pl.andrzejressel.deeplambdaserialization.lib.ClassName
 import pl.andrzejressel.deeplambdaserialization.lib.NameUtils
-import proguard.classfile.AccessConstants
-import proguard.classfile.ClassPool
-import proguard.classfile.LibraryClass
-import proguard.classfile.ProgramClass
+import proguard.classfile.*
 import proguard.classfile.editor.ClassBuilder
 import proguard.classfile.util.ClassSuperHierarchyInitializer
 import proguard.classfile.util.WarningPrinter
@@ -32,7 +29,7 @@ object LambdaInnerClassFixer {
         val clz = programClassPool.getClass(className.proguardClassName) as ProgramClass
         val parentClzBase = clz.superClass
 
-        val parentClzInit = when(parentClzBase) {
+        val parentClzInit = when (parentClzBase) {
             is ProgramClass -> parentClzBase.methods.first { it.getName(parentClzBase) == "<init>" }
             is LibraryClass -> parentClzBase.methods.first { it.getName(parentClzBase) == "<init>" }
             else -> throw IllegalStateException("parentClzBase has invalid class: ${parentClzBase.javaClass}")
@@ -40,23 +37,53 @@ object LambdaInnerClassFixer {
 
         val cb = if (clz.findMethod("<init>", "()V") == null) {
             ClassBuilder(clz)
-                .addMethod(
-                    AccessConstants.PUBLIC,
-                    "<init>",
-                    "()V",
-                    50
-                ) { code ->
-                    code
-                        .aload_0()
-                        .invokespecial(parentClzBase, parentClzInit)
-                        .return_()
-                }
-                .programClass
+                    .addMethod(
+                            AccessConstants.PUBLIC,
+                            "<init>",
+                            "()V",
+                            50
+                    ) { code ->
+                        code
+                                .aload_0()
+                                .invokespecial(parentClzBase, parentClzInit)
+                                .return_()
+                    }
+                    .programClass
         } else {
             clz
         }
 
+        val programClass =
+                ClassBuilder(
+                        VersionConstants.CLASS_VERSION_11,
+                        AccessConstants.PUBLIC,
+                        "EntryPoint",
+                        ClassConstants.NAME_JAVA_LANG_OBJECT)
+
+                        .addMethod(
+                                AccessConstants.PUBLIC or  AccessConstants.STATIC,
+                                "run",
+                                "([Ljava/lang/Object;)Ljava/lang/Object;",
+                                50
+                        ) { code ->
+
+                            val descriptor = "(Lpl/andrzejressel/deeplambdaserialization/lib/SerializableFunctionN;[Ljava/lang/Object;)Ljava/lang/Object;"
+
+                            code
+                                .new_(cb)
+                                .dup()
+                                .invokespecial(cb, cb.findMethod("<init>", "()V"))
+                                .astore_1()
+                                .aload_1()
+                                .aload_0()
+                                .invokestatic("pl/andrzejressel/deeplambdaserialization/lib/Runner", "runObject", descriptor)
+                                .areturn()
+//
+                        }
+                        .programClass;
+
         programClassPool.addClass(cb)
+        programClassPool.addClass(programClass)
         initializeClassPools(programClassPool, libraryClassPool)
 
         IOUtil.writeJar(programClassPool, newOutputFile.absolutePathString())
@@ -85,12 +112,10 @@ object LambdaInnerClassFixer {
         }
 
         val hierarchyInit = ClassSuperHierarchyInitializer(
-            programClassPool,
-            libraryClassPool,
-            myLogger,
-            myLogger
-//            WarningPrinter(PrintWriter(System.err)),
-//            WarningPrinter(PrintWriter(System.err))
+                programClassPool,
+                libraryClassPool,
+                myLogger,
+                myLogger
         )
         programClassPool.classesAccept(hierarchyInit)
         libraryClassPool.classesAccept(hierarchyInit)
@@ -101,10 +126,10 @@ object LambdaInnerClassFixer {
         classes.filter { it.exists() }.forEach { fileName ->
 
             val baseDataEntryReader = ClassFilter(
-                ClassReader(
-                    false, false, false, false, null,
-                    ClassPoolFiller(programClassPool)
-                )
+                    ClassReader(
+                            false, false, false, false, null,
+                            ClassPoolFiller(programClassPool)
+                    )
             )
 
             if (fileName.isDirectory()) {
@@ -120,10 +145,10 @@ object LambdaInnerClassFixer {
     private fun createLibraryClassPool(supportLib: Set<Path>): ClassPool {
         val libraryClassPool = ClassPool()
         val baseDataEntryReader = ClassFilter(
-            ClassReader(
-                true, true, true, false, null,
-                ClassPoolFiller(libraryClassPool)
-            )
+                ClassReader(
+                        true, true, true, false, null,
+                        ClassPoolFiller(libraryClassPool)
+                )
         )
 
         (supportLib).filter { it.exists() }.forEach { fileName ->
@@ -136,10 +161,10 @@ object LambdaInnerClassFixer {
         }
 
         FileSource(File("${System.getProperty("java.home")}/jmods/java.base.jmod")).pumpDataEntries(
-            JarReader(
-                true,
-                baseDataEntryReader
-            )
+                JarReader(
+                        true,
+                        baseDataEntryReader
+                )
         )
 
         return libraryClassPool

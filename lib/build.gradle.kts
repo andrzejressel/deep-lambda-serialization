@@ -19,7 +19,7 @@ dependencies {
     testRuntimeOnly(libs.junit.platform.launcher)
     testImplementation(libs.junit.jupiter)
     implementation(libs.jetbrains.annotations)
-    implementation("pl.andrzejressel.sjs:serializator:0.0.1")
+    api(libs.sjs)
 }
 
 tasks.test {
@@ -68,8 +68,21 @@ val generateSerializableFunction by tasks.registering {
                 "(${c}) args[${index}]"
             }.joinToString(separator = ", ")
             val serializatorFields = alphabet.take(i).joinToString(separator = "\n") { c ->
-                "                    protected Serializator<$c> ${c.lowercaseChar()};"
+                "                    protected abstract Serializator<$c> get${c}Serializator();"
             }
+
+            val getArgumentSerializatorContent = alphabet.take(i).map { c ->
+                "                    l.add((Serializator<Object>) get${c}Serializator());"
+            }.joinToString(separator = "\n")
+            val getArgumentsSerializator = """
+                @Override
+                final public List<Serializator<Object>> getArgumentsSerializator() {
+                    var l = new ArrayList<Serializator<Object>>();
+$getArgumentSerializatorContent
+                    return l;
+                }
+            """.trimIndent()
+                .lines().joinToString(separator = "\n") { "                    $it" }
 
             Files.createDirectories(dir)
 
@@ -77,10 +90,14 @@ val generateSerializableFunction by tasks.registering {
                 package pl.andrzejressel.deeplambdaserialization.lib;
                 
                 import pl.andrzejressel.sjs.serializator.Serializator;
+                import java.util.ArrayList;
+                import java.util.List;
                 
                 public abstract class SerializableFunction${i}<$genericClasses> extends SerializableFunctionN {
                     public abstract RET execute(${arguments});
+                    public abstract Serializator<RET> getReturnSerializator();
 $serializatorFields
+$getArgumentsSerializator
                     @Override
                     public final Object execute(Object[] args) {
                         if (args.length != ${i}) {
@@ -88,6 +105,10 @@ $serializatorFields
                         }
                         ${if (i != 0) "//noinspection unchecked" else ""}
                         return execute(${arguments2});
+                    }
+                    @Override
+                    public final Serializator<Object> getResultSerializator() {
+                        return (Serializator<Object>) getReturnSerializator();
                     }
                 }
             """.trimIndent()

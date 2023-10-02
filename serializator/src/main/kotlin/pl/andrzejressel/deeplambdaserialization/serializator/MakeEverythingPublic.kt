@@ -10,13 +10,13 @@ import proguard.classfile.visitor.MemberVisitor
 
 class MakeEverythingPublic: ClassVisitor, MemberVisitor {
     override fun visitProgramClass(programClass: ProgramClass) {
-        programClass.u2accessFlags = programClass.u2accessFlags and AccessConstants.PRIVATE.inv()
+        programClass.u2accessFlags = programClass.u2accessFlags and AccessConstants.PRIVATE.inv() and AccessConstants.PROTECTED.inv()
         programClass.u2accessFlags = programClass.u2accessFlags or AccessConstants.PUBLIC
         programClass.methodsAccept(this)
     }
 
     override fun visitProgramMember(programClass: ProgramClass, programMember: ProgramMember) {
-        programMember.u2accessFlags = programMember.u2accessFlags and AccessConstants.PRIVATE.inv()
+        programMember.u2accessFlags = programMember.u2accessFlags and AccessConstants.PRIVATE.inv() and AccessConstants.PROTECTED.inv()
         programMember.u2accessFlags = programMember.u2accessFlags or AccessConstants.PUBLIC
     }
 

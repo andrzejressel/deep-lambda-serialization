@@ -8,6 +8,7 @@ import pl.andrzejressel.deeplambdaserialization.lib.SerializableFunctionN
 import proguard.Configuration
 import proguard.ConfigurationParser
 import proguard.ProGuard
+import proguard.classfile.AccessConstants
 import proguard.classfile.ClassPool
 import proguard.classfile.Clazz
 import proguard.classfile.editor.ClassEditor
@@ -62,7 +63,9 @@ class LambdaSerializator(
     }
 
     fun getClasses(): List<ClassName> {
-        return programClassPool.classes().filter { it.extendsOrImplements(serializableFunction) }
+        return programClassPool.classes()
+            .filter { it.extendsOrImplements(serializableFunction) }
+            .filterNot { it.accessFlags and AccessConstants.ABSTRACT == AccessConstants.ABSTRACT }
             .map { ProguardClassName(it.name) }
     }
 
