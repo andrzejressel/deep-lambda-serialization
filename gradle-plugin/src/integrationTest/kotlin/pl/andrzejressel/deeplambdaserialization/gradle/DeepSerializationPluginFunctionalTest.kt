@@ -23,8 +23,8 @@ class DeepSerializationPluginFunctionalTest {
 
 
         // Verify the result
-//        assertThat(result.output)
-//            .contains("Hello from plugin 'pl.andrzejressel.deeplambdaserialization'")
+        assertThat(result.output)
+            .contains("com.example.project.Main\$1.jar")
     }
 
     @Test
