@@ -19,9 +19,6 @@ dependencies {
     implementation(libs.proguard)
 }
 
-
-val javaPlugin = project.extensions.getByType<JavaPluginExtension>()
-
 val libProject = project(":lib")
 
 val fromLib: Provider<List<File>> = configurations.runtimeClasspath.map {

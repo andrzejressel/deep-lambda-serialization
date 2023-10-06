@@ -52,19 +52,31 @@ abstract class GenerateLambdaJars : DefaultTask() {
 //                println(it)
 //            }
 
-        println(classes.get())
+        println("All classes:")
+        allClasses.get().forEach { println(it) }
+
+        println("Dependencies:")
+        dependencies.get().forEach { println(it) }
+
+        println("Classes:")
+        classes.get().forEach { println(it) }
+
+        val other = allClasses.get().map { it.toPath() }.toSet() - dependencies.get().map { it.toPath() }.toSet()
+        println("Other:")
+        other.forEach { println(it) }
 
         val sl = LambdaSerializator(
-            allClasses.get().map { it.toPath() }.toSet(),
+            other,
             dependencies.get().map { it.toPath() }.toSet(),
             classes.get().map { it.toPath() }.toSet(),
             output.get().asFile.toPath().resolve("META-INF")
         )
 
+        println("Classes to generate: [${sl.getClasses()}]")
+
         sl.getClasses().forEach {
             sl.createJar(it)
         }
-
 
     }
 }

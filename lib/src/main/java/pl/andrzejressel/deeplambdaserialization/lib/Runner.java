@@ -4,8 +4,6 @@ import java.nio.ByteBuffer;
 
 public class Runner {
 
-
-
     public static Object runObject(SerializableFunctionN serializableFunctionN, Object[] args) {
         return serializableFunctionN.execute(args);
     }

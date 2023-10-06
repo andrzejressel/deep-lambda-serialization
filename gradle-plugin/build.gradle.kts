@@ -28,8 +28,14 @@ tasks.test {
     }
 }
 
+
+val mvnGroupId = parent!!.group.toString()
+val mvnArtifactId = name
+val mvnVersion = parent!!.version.toString()
+
 gradlePlugin {
     val deeplambdaserialization by plugins.creating {
+        version = mvnVersion
         id = "pl.andrzejressel.deeplambdaserialization"
         implementationClass = "pl.andrzejressel.deeplambdaserialization.gradle.DeepSerializationPlugin"
         tags.add("serialization")
@@ -66,6 +72,7 @@ testing {
         register<JvmTestSuite>("integrationTest") {
             dependencies {
                 implementation(gradleTestKit())
+                implementation(libs.ztzip)
             }
 
             sources {
@@ -110,10 +117,6 @@ publishing {
         mavenLocal()
     }
 }
-
-val mvnGroupId = parent!!.group.toString()
-val mvnArtifactId = name
-val mvnVersion = parent!!.version.toString()
 
 publishing {
     publications {

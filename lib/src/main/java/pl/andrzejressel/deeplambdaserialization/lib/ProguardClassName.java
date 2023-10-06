@@ -16,4 +16,11 @@ public class ProguardClassName implements ClassName {
     public String getProguardClassName() {
         return className;
     }
+
+    @Override
+    public String toString() {
+        return "ProguardClassName{" +
+                "className='" + className + '\'' +
+                '}';
+    }
 }

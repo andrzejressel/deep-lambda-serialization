@@ -22,7 +22,7 @@ public class Main {
         };
 
         var url = DeepLambdaSerialization.getJar(Main.class, lambda);
-        System.out.println(url);
+        System.out.println("JAR: [" + url + "]");
     }
 
 }

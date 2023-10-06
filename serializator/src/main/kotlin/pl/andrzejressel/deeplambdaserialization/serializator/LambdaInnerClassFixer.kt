@@ -55,32 +55,27 @@ object LambdaInnerClassFixer {
 
         val programClass =
                 ClassBuilder(
-                        VersionConstants.CLASS_VERSION_11,
+                        VersionConstants.CLASS_VERSION_1_8,
                         AccessConstants.PUBLIC,
                         "EntryPoint",
-                        ClassConstants.NAME_JAVA_LANG_OBJECT)
-
+                        ClassConstants.NAME_JAVA_LANG_OBJECT
+                )
                         .addMethod(
                                 AccessConstants.PUBLIC or  AccessConstants.STATIC,
                                 "run",
                                 "([Ljava/lang/Object;)Ljava/lang/Object;",
                                 50
                         ) { code ->
-
                             val descriptor = "(Lpl/andrzejressel/deeplambdaserialization/lib/SerializableFunctionN;[Ljava/lang/Object;)Ljava/lang/Object;"
-
                             code
                                 .new_(cb)
                                 .dup()
                                 .invokespecial(cb, cb.findMethod("<init>", "()V"))
-                                .astore_1()
-                                .aload_1()
                                 .aload_0()
                                 .invokestatic("pl/andrzejressel/deeplambdaserialization/lib/Runner", "runObject", descriptor)
                                 .areturn()
-//
                         }
-                        .programClass;
+                        .programClass
 
         programClassPool.addClass(cb)
         programClassPool.addClass(programClass)

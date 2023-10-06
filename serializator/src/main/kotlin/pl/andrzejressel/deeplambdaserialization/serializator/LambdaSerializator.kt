@@ -72,6 +72,8 @@ class LambdaSerializator(
     fun createJar(className: ClassName): File {
         val base64lambdaClassName = NameUtils.getJarName(className)
 
+        println("PROGUARD START: ${Date()}")
+
         val outputFile = output.resolve("${base64lambdaClassName}.step1.jar").toFile()
         outputFile.parentFile.toPath().createDirectories()
 
@@ -90,9 +92,11 @@ class LambdaSerializator(
         }.map { it.absolutePath }
 
         val configurationString = """
-            -keep class ${className.javaClassName} {
-                *;
-            }
+            -keep class ${className.javaClassName} {*;}
+            -keep public interface pl.andrzejressel.sjs.serializator.Serializator {*;}
+            -keep public class pl.andrzejressel.deeplambdaserialization.lib.Runner {*;}
+            -keep public interface com.amazonaws.services.lambda.runtime.RequestHandler {*;}
+            -keep public class Handler {*;}
             ${injars.joinToString(separator = "\n") { "-injars $it" }}
             ${outjars.joinToString(separator = "\n") { "-outjars $it" }}
             ${libraryJars.joinToString(separator = "\n") { "-libraryjars $it" }}
@@ -101,7 +105,6 @@ class LambdaSerializator(
             -dontobfuscate
             -forceprocessing
         """.trimIndent()
-
 
         // Create the default options.
         val configuration = Configuration()
@@ -120,8 +123,9 @@ class LambdaSerializator(
 
         ZipUtil.removeEntries(outputFile, entriesToRemove.toTypedArray())
 
+        println("PROGUARD END: ${Date()}")
+
         return LambdaInnerClassFixer.run(outputFile, supportLib, className)
-//        return outputFile
     }
 
     private fun initializeClassPools(programClassPool: ClassPool, libraryClassPool: ClassPool) {

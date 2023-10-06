@@ -24,4 +24,11 @@ public class JavaClassName implements ClassName {
     public String getProguardClassName() {
         return className.replace('.', '/');
     }
+
+    @Override
+    public String toString() {
+        return "JavaClassName{" +
+                "className='" + className + '\'' +
+                '}';
+    }
 }

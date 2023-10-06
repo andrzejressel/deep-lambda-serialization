@@ -4,7 +4,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import pl.andrzejressel.deeplambdaserialization.lib.JavaClassName
 import pl.andrzejressel.deeplambdaserialization.lib.NameUtils
-import pl.andrzejressel.deeplambdaserialization.lib.SerializableFunctionN
 import java.lang.invoke.MethodHandles
 import java.lang.invoke.MethodType
 import java.net.URLClassLoader

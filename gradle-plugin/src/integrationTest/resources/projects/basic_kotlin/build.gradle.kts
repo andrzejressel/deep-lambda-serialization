@@ -3,7 +3,7 @@ import org.gradle.authentication.http.HttpHeaderAuthentication
 import pl.andrzejressel.deeplambdaserialization.gradle.DeepSerializationPluginExtension
 
 plugins {
-    java
+    kotlin("jvm") version "1.9.10"
     application
     id("pl.andrzejressel.deeplambdaserialization")
 }
@@ -31,5 +31,5 @@ dependencies {
 }
 
 application {
-    mainClass.set("com.example.project.Main")
+    mainClass.set("com.example.project.MainKt")
 }
