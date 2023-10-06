@@ -1,3 +1,1 @@
-plugins {
-    id("pl.andrzejressel.deeplambdaserialization")
-}
+plugins { id("pl.andrzejressel.deeplambdaserialization") }

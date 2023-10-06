@@ -6,15 +6,16 @@ import pl.andrzejressel.sjs.serializator.Serializator
 import pl.andrzejressel.sjs.serializator.StringSerializator
 
 fun main() {
-    val lambda: SerializableFunction0<String> = object : SerializableFunction0<String>() {
+  val lambda: SerializableFunction0<String> =
+      object : SerializableFunction0<String>() {
         override fun getReturnSerializator(): Serializator<String> {
-            return StringSerializator.INSTANCE
+          return StringSerializator.INSTANCE
         }
 
         override fun execute(): String {
-            return "test string"
+          return "test string"
         }
-    }
-    val url = DeepLambdaSerialization.getJar(lambda.javaClass, lambda)
-    println("JAR: [$url]")
+      }
+  val url = DeepLambdaSerialization.getJar(lambda)
+  println("JAR: [$url]")
 }

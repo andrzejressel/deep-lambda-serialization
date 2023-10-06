@@ -1,35 +1,28 @@
 import org.gradle.api.credentials.HttpHeaderCredentials
 import org.gradle.authentication.http.HttpHeaderAuthentication
-import pl.andrzejressel.deeplambdaserialization.gradle.DeepSerializationPluginExtension
 
 plugins {
-    java
-    application
-    id("pl.andrzejressel.deeplambdaserialization")
+  java
+  application
+  id("pl.andrzejressel.deeplambdaserialization")
 }
 
 repositories {
-    mavenCentral()
-    mavenLocal()
+  mavenCentral()
+  mavenLocal()
 }
 
 repositories {
-    maven {
-        url = uri("https://maven.pkg.github.com/andrzejressel/simple-java-serialization")
-        credentials(HttpHeaderCredentials::class) {
-            name = "Authorization"
-            value = "Bearer ${project.findProperty("gpr.token")}"
-        }
-        authentication {
-            create<HttpHeaderAuthentication>("header")
-        }
+  maven {
+    url = uri("https://maven.pkg.github.com/andrzejressel/simple-java-serialization")
+    credentials(HttpHeaderCredentials::class) {
+      name = "Authorization"
+      value = "Bearer ${project.findProperty("gpr.token")}"
     }
+    authentication { create<HttpHeaderAuthentication>("header") }
+  }
 }
 
-dependencies {
-    implementation("pl.andrzejressel.djcs:lib:DEV")
-}
+dependencies { implementation("pl.andrzejressel.djcs:lib:DEV") }
 
-application {
-    mainClass.set("com.example.project.Main")
-}
+application { mainClass.set("com.example.project.Main") }
