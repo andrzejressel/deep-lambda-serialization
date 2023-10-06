@@ -134,9 +134,12 @@ tasks.named("check") {
 }
 
 tasks.jacocoTestReport {
+  dependsOn("test", "integrationTest")
+
+  executionData.setFrom(fileTree(buildDir).include("/jacoco/*.exec"))
   reports {
     xml.required = true
-    html.required = false
+    html.required = true
   }
 }
 
