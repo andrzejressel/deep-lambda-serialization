@@ -8,12 +8,6 @@ public class Main {
 
     public static void main(String[] args) {
         var lambda = new SerializableFunction0<String>() {
-
-            @Override
-            public Serializator<String> getReturnSerializator() {
-                return StringSerializator.INSTANCE;
-            }
-
             @Override
             public String execute() {
                 return "";

@@ -24,7 +24,7 @@ class LambdaSerializatorTest {
 
     val constructorMethodType = MethodType.methodType(Any::class.java, Array<Any>::class.java)
     val constructorMethodHandle =
-        MethodHandles.publicLookup().findStatic(clz, "run", constructorMethodType)
+        MethodHandles.publicLookup().findStatic(clz, "execute", constructorMethodType)
 
     val inst = constructorMethodHandle.invoke(arrayOf(1, 2))
 
@@ -44,7 +44,7 @@ class LambdaSerializatorTest {
 
     val constructorMethodType = MethodType.methodType(Any::class.java, Array<Any>::class.java)
     val constructorMethodHandle =
-        MethodHandles.publicLookup().findStatic(clz, "run", constructorMethodType)
+        MethodHandles.publicLookup().findStatic(clz, "execute", constructorMethodType)
 
     val inst = constructorMethodHandle.invoke(arrayOf(1, 2))
 

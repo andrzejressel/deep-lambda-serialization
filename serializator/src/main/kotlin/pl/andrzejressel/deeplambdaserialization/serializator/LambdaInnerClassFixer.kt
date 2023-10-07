@@ -5,8 +5,7 @@ import java.nio.file.Path
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
-import pl.andrzejressel.deeplambdaserialization.lib.ClassName
-import pl.andrzejressel.deeplambdaserialization.lib.NameUtils
+import pl.andrzejressel.deeplambdaserialization.lib.*
 import proguard.classfile.*
 import proguard.classfile.editor.ClassBuilder
 import proguard.classfile.util.ClassSuperHierarchyInitializer
@@ -25,6 +24,22 @@ object LambdaInnerClassFixer {
     val libraryClassPool = createLibraryClassPool(supportLib)
 
     initializeClassPools(programClassPool, libraryClassPool)
+
+    val serializableFunction =
+        libraryClassPool.getClass(SerializableFunctionN::class.java.name.replace('.', '/'))
+            ?: programClassPool.getClass(SerializableFunctionN::class.java.name.replace('.', '/'))
+                ?: throw RuntimeException("Cannot find SerializableFunctionN")
+
+    val serializableInputFunction =
+        libraryClassPool.getClass(SerializableInputFunctionN::class.java.name.replace('.', '/'))
+            ?: programClassPool.getClass(
+                SerializableInputFunctionN::class.java.name.replace('.', '/'))
+
+    val serializableInputOutputFunction =
+        libraryClassPool.getClass(
+            SerializableInputOutputFunctionN::class.java.name.replace('.', '/'))
+            ?: programClassPool.getClass(
+                SerializableInputOutputFunctionN::class.java.name.replace('.', '/'))
 
     val clz = programClassPool.getClass(className.proguardClassName) as ProgramClass
     val parentClzBase = clz.superClass
@@ -49,34 +64,87 @@ object LambdaInnerClassFixer {
           clz
         }
 
-    val programClass =
+    val programClassBuilder =
         ClassBuilder(
-                VersionConstants.CLASS_VERSION_1_8,
-                AccessConstants.PUBLIC,
-                "EntryPoint",
-                ClassConstants.NAME_JAVA_LANG_OBJECT)
-            .addMethod(
-                AccessConstants.PUBLIC or AccessConstants.STATIC,
-                "run",
-                "([Ljava/lang/Object;)Ljava/lang/Object;",
-                50) { code ->
-                  val descriptor =
-                      "(Lpl/andrzejressel/deeplambdaserialization/lib/SerializableFunctionN;[Ljava/lang/Object;)Ljava/lang/Object;"
-                  code
-                      .new_(cb)
-                      .dup()
-                      .invokespecial(cb, cb.findMethod("<init>", "()V"))
-                      .aload_0()
-                      .invokestatic(
-                          "pl/andrzejressel/deeplambdaserialization/lib/Runner",
-                          "runObject",
-                          descriptor)
-                      .areturn()
-                }
-            .programClass
+            VersionConstants.CLASS_VERSION_1_8,
+            AccessConstants.PUBLIC,
+            "EntryPoint",
+            ClassConstants.NAME_JAVA_LANG_OBJECT)
+
+    programClassBuilder.addMethod(
+        AccessConstants.PUBLIC or AccessConstants.STATIC,
+        "execute",
+        "([Ljava/lang/Object;)Ljava/lang/Object;",
+        50) { code ->
+          val method =
+              serializableFunction.findMethod("execute", "([Ljava/lang/Object;)Ljava/lang/Object;")
+
+          code
+              .new_(cb)
+              .dup()
+              .invokespecial(cb, cb.findMethod("<init>", "()V"))
+              .aload_0()
+              .invokevirtual(serializableFunction, method)
+              .areturn()
+        }
+
+    if (serializableInputFunction != null && clz.extendsOrImplements(serializableInputFunction)) {
+      val clz = serializableInputFunction
+      val method = clz.findMethod("execute", "([[B)Ljava/lang/Object;")
+
+      programClassBuilder.addMethod(
+          AccessConstants.PUBLIC or AccessConstants.STATIC,
+          "execute",
+          method.getDescriptor(clz),
+          50) { code ->
+            code
+                .new_(cb)
+                .dup()
+                .invokespecial(cb, cb.findMethod("<init>", "()V"))
+                .aload_0()
+                .invokevirtual(clz, method)
+                .areturn()
+          }
+    }
+
+    if (serializableInputOutputFunction != null &&
+        clz.extendsOrImplements(serializableInputOutputFunction)) {
+
+      val clz = serializableInputOutputFunction
+      val objectMethod = clz.findMethod("executeAndSerialize", "([Ljava/lang/Object;)[B")
+      val byteArrayMethod = clz.findMethod("executeAndSerialize", "([[B)[B")
+
+      programClassBuilder.addMethod(
+          AccessConstants.PUBLIC or AccessConstants.STATIC,
+          "executeAndSerialize",
+          objectMethod.getDescriptor(clz),
+          50) { code ->
+            code
+                .new_(cb)
+                .dup()
+                .invokespecial(cb, cb.findMethod("<init>", "()V"))
+                .aload_0()
+                .invokevirtual(clz, objectMethod)
+                .areturn()
+          }
+
+      programClassBuilder.addMethod(
+          AccessConstants.PUBLIC or AccessConstants.STATIC,
+          "executeAndSerialize",
+          byteArrayMethod.getDescriptor(clz),
+          50) { code ->
+            code
+                .new_(cb)
+                .dup()
+                .invokespecial(cb, cb.findMethod("<init>", "()V"))
+                .aload_0()
+                .invokevirtual(clz, byteArrayMethod)
+                .areturn()
+          }
+    }
 
     programClassPool.addClass(cb)
-    programClassPool.addClass(programClass)
+    programClassPool.addClass(programClassBuilder.programClass)
     initializeClassPools(programClassPool, libraryClassPool)
 
     IOUtil.writeJar(programClassPool, newOutputFile.absolutePathString())

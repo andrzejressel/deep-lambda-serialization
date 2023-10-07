@@ -21,21 +21,21 @@ dependencies {
 
 val libProject = project(":lib")
 
-val fromLib: Provider<List<File>> =
-    configurations.runtimeClasspath.map {
-      val firstLevel = it.resolvedConfiguration.firstLevelModuleDependencies
-
-      firstLevel
-          .first { it.moduleGroup == libProject.group && it.moduleName == libProject.name }
-          .allModuleArtifacts
-          .map { it.file }
-    }
+// val fromLib: Provider<List<File>> =
+//    configurations.runtimeClasspath.map {
+//      val firstLevel = it.resolvedConfiguration.firstLevelModuleDependencies
+//
+//      firstLevel
+//          .first { it.moduleGroup == libProject.group && it.moduleName == libProject.name }
+//          .allModuleArtifacts
+//          .map { it.file }
+//    }
 
 val generateSerializatorBuildInfo =
     tasks.register<GenerateSerializatorBuildInfo>("generateSerializatorBuildInfo") {
       dependsOn(":lib:jar")
       dependencies.set(configurations.runtimeClasspath)
-      supportLib.set(fromLib)
+      //      supportLib.set(fromLib)
       output.set(layout.buildDirectory.dir("generated/sources/build_info"))
     }
 

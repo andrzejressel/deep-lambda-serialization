@@ -10,10 +10,5 @@ public class SharedLib {
         public String execute() {
             return "hello from lambda";
         }
-
-        @Override
-        public Serializator<String> getReturnSerializator() {
-            return StringSerializator.INSTANCE;
-        }
     };
 }

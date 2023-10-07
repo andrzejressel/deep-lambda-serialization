@@ -86,7 +86,7 @@ val generateSerializableFunction by
           val getArgumentsSerializator =
               """
                                 @Override
-                                final public List<Serializator<Object>> getArgumentsSerializator() {
+                                final public List<Serializator<Object>> getInputSerializators() {
                                     var l = new ArrayList<Serializator<Object>>();
                 $getArgumentSerializatorContent
                                     return l;
@@ -98,7 +98,7 @@ val generateSerializableFunction by
 
           Files.createDirectories(dir)
 
-          val clz =
+          val serializableFunction =
               """
                                 package pl.andrzejressel.deeplambdaserialization.lib;
                                 
@@ -107,6 +107,52 @@ val generateSerializableFunction by
                                 import java.util.List;
                                 
                                 public abstract class SerializableFunction$i<$genericClasses> extends SerializableFunctionN {
+                                    public abstract RET execute($arguments);
+                                    @Override
+                                    public final Object execute(Object[] args) {
+                                        if (args.length != $i) {
+                                            throw new IllegalArgumentException(String.format("Array must have $i ${if (i == 1) "element" else "elements"}, it has %d instead", args.length));
+                                        }
+                                        ${if (i != 0) "//noinspection unchecked" else ""}
+                                        return execute($arguments2);
+                                    }
+                                }
+                """
+                  .trimIndent()
+
+          val inputClz =
+              """
+                                package pl.andrzejressel.deeplambdaserialization.lib;
+                                
+                                import pl.andrzejressel.sjs.serializator.Serializator;
+                                import java.util.ArrayList;
+                                import java.util.List;
+
+                                public abstract class SerializableInputFunction$i<$genericClasses> extends SerializableInputFunctionN {
+                                    public abstract RET execute($arguments);
+                $serializatorFields
+                $getArgumentsSerializator
+                                    @Override
+                                    public final Object execute(Object[] args) {
+                                        if (args.length != $i) {
+                                            throw new IllegalArgumentException(String.format("Array must have $i ${if (i == 1) "element" else "elements"}, it has %d instead", args.length));
+                                        }
+                                        ${if (i != 0) "//noinspection unchecked" else ""}
+                                        return execute($arguments2);
+                                    }
+                                }
+                """
+                  .trimIndent()
+
+          val inputOutputClz =
+              """
+                                package pl.andrzejressel.deeplambdaserialization.lib;
+                                
+                                import pl.andrzejressel.sjs.serializator.Serializator;
+                                import java.util.ArrayList;
+                                import java.util.List;
+
+                                public abstract class SerializableInputOutputFunction$i<$genericClasses> extends SerializableInputOutputFunctionN {
                                     public abstract RET execute($arguments);
                                     public abstract Serializator<RET> getReturnSerializator();
                 $serializatorFields
@@ -120,14 +166,17 @@ val generateSerializableFunction by
                                         return execute($arguments2);
                                     }
                                     @Override
-                                    public final Serializator<Object> getResultSerializator() {
+                                    public final Serializator<Object> getOutputSerializator() {
                                         return (Serializator<Object>) getReturnSerializator();
                                     }
                                 }
                 """
                   .trimIndent()
 
-          Files.writeString(classDir.resolve("SerializableFunction$i.java"), clz)
+          Files.writeString(classDir.resolve("SerializableFunction$i.java"), serializableFunction)
+          Files.writeString(classDir.resolve("SerializableInputFunction$i.java"), inputClz)
+          Files.writeString(
+              classDir.resolve("SerializableInputOutputFunction$i.java"), inputOutputClz)
         }
       }
     }

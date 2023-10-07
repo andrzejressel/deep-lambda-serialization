@@ -94,8 +94,6 @@ class LambdaSerializator(
     val configurationString =
         """
             -keep class ${className.javaClassName} {*;}
-            -keep public interface pl.andrzejressel.sjs.serializator.Serializator {*;}
-            -keep public class pl.andrzejressel.deeplambdaserialization.lib.Runner {*;}
             ${additionalProguardOptions.joinToString(separator = "\n")}
             ${injars.joinToString(separator = "\n") { "-injars $it" }}
             ${outjars.joinToString(separator = "\n") { "-outjars $it" }}

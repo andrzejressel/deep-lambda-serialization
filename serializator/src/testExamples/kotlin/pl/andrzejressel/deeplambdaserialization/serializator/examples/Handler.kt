@@ -49,7 +49,8 @@ abstract class AbstractLambdaGeneratorTest {
             .filterNot { it.toString().contains("wrapper") }
             .toSet()
 
-    val supportLibList = supportLib.split(",").map { Paths.get(it) }.toSet()
+    val supportLibList =
+        supportLib.split(",").filter { it.isNotEmpty() }.map { Paths.get(it) }.toSet()
 
     //        val classPath = System.getProperty("java.class.path").split(';')
     //            .asSequence()

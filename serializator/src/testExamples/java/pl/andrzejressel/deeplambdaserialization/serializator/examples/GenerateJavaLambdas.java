@@ -3,9 +3,6 @@ package pl.andrzejressel.deeplambdaserialization.serializator.examples;
 import java.text.MessageFormat;
 import org.junit.jupiter.api.Test;
 import pl.andrzejressel.deeplambdaserialization.lib.*;
-import pl.andrzejressel.sjs.serializator.IntegerSerializator;
-import pl.andrzejressel.sjs.serializator.Serializator;
-import pl.andrzejressel.sjs.serializator.StringSerializator;
 
 @SuppressWarnings("NewClassNamingConvention")
 public class GenerateJavaLambdas extends AbstractLambdaGeneratorTest {
@@ -20,21 +17,6 @@ public class GenerateJavaLambdas extends AbstractLambdaGeneratorTest {
           @Override
           public String execute(Integer integer, Integer integer2) {
             return MessageFormat.format("{0}", integer + integer2);
-          }
-
-          @Override
-          public Serializator<String> getReturnSerializator() {
-            return StringSerializator.INSTANCE;
-          }
-
-          @Override
-          protected Serializator<Integer> getASerializator() {
-            return IntegerSerializator.INSTANCE;
-          }
-
-          @Override
-          protected Serializator<Integer> getBSerializator() {
-            return IntegerSerializator.INSTANCE;
           }
         });
   }
