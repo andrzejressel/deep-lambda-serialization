@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.fail
 import pl.andrzejressel.deeplambdaserialization.lib.JavaClassName
 import pl.andrzejressel.deeplambdaserialization.lib.NameUtils
-import pl.andrzejressel.sjs.serializator.IntegerSerializator
-import pl.andrzejressel.sjs.serializator.StringSerializator
+import pl.andrzejressel.dto.serializator.IntegerSerializator
+import pl.andrzejressel.dto.serializator.StringSerializator
 
 class EntrypointTest {
 

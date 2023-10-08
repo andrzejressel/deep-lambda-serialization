@@ -29,9 +29,13 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 subprojects {
   afterEvaluate {
     configure<com.diffplug.gradle.spotless.SpotlessExtension> {
-      kotlin { ktfmt() }
+      kotlin {
+        target("src/integrationTest/resources/**/*.kt")
+        ktfmt()
+      }
       kotlinGradle {
         target("*.gradle.kts") // default target for kotlinGradle
+        target("src/integrationTest/resources/**/*.gradle.kts")
         ktfmt() // or ktfmt() or prettier()
       }
       java {
@@ -40,21 +44,10 @@ subprojects {
         cleanthat()
         googleJavaFormat()
         targetExclude("build/generated/**/*.java")
+        target("src/integrationTest/resources/**/*.java")
       }
     }
   }
 }
 
-allprojects {
-  repositories {
-    mavenCentral()
-    maven {
-      url = uri("https://maven.pkg.github.com/andrzejressel/simple-java-serialization")
-      credentials(HttpHeaderCredentials::class) {
-        name = "Authorization"
-        value = "Bearer ${project.findProperty("gpr.token") as String}"
-      }
-      authentication { create<HttpHeaderAuthentication>("header") }
-    }
-  }
-}
+allprojects { repositories { mavenCentral() } }

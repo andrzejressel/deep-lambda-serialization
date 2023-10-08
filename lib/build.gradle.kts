@@ -20,7 +20,7 @@ dependencies {
   testRuntimeOnly(libs.junit.platform.launcher)
   testImplementation(libs.junit.jupiter)
   implementation(libs.jetbrains.annotations)
-  api(libs.sjs)
+  api(libs.dto.serializator)
 }
 
 tasks.test {
@@ -102,7 +102,7 @@ val generateSerializableFunction by
               """
                                 package pl.andrzejressel.deeplambdaserialization.lib;
                                 
-                                import pl.andrzejressel.sjs.serializator.Serializator;
+                                import pl.andrzejressel.dto.serializator.Serializator;
                                 import java.util.ArrayList;
                                 import java.util.List;
                                 
@@ -124,7 +124,7 @@ val generateSerializableFunction by
               """
                                 package pl.andrzejressel.deeplambdaserialization.lib;
                                 
-                                import pl.andrzejressel.sjs.serializator.Serializator;
+                                import pl.andrzejressel.dto.serializator.Serializator;
                                 import java.util.ArrayList;
                                 import java.util.List;
 
@@ -148,7 +148,7 @@ val generateSerializableFunction by
               """
                                 package pl.andrzejressel.deeplambdaserialization.lib;
                                 
-                                import pl.andrzejressel.sjs.serializator.Serializator;
+                                import pl.andrzejressel.dto.serializator.Serializator;
                                 import java.util.ArrayList;
                                 import java.util.List;
 

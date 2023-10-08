@@ -1,6 +1,6 @@
 package pl.andrzejressel.deeplambdaserialization.lib;
 
-import pl.andrzejressel.sjs.serializator.Serializator;
+import pl.andrzejressel.dto.serializator.Serializator;
 
 public abstract class SerializableInputOutputFunctionN extends SerializableInputFunctionN {
   public abstract Serializator<Object> getOutputSerializator();

@@ -9,7 +9,6 @@ import org.assertj.core.api.Assertions.assertThat
 import org.gradle.testkit.runner.GradleRunner
 import org.junit.jupiter.api.Test
 import org.zeroturnaround.zip.ZipUtil
-import pl.andrzejressel.deeplambdaserialization.gradle.integrationtest.BuildInfo
 
 class DeepSerializationPluginFunctionalTest {
 
@@ -155,7 +154,7 @@ class DeepSerializationPluginFunctionalTest {
         GradleRunner.create()
             .forwardOutput()
             .withPluginClasspath()
-            .withArguments("-Pgpr.token=${BuildInfo.token}", "clean", "run", "--stacktrace")
+            .withArguments("clean", "run", "--stacktrace")
             .withProjectDir(dir.resolve("projects/$projectName").toFile())
             .withDebug(true)
             .build()
