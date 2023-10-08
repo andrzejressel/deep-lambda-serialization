@@ -2,7 +2,7 @@ package pl.andrzejressel.deeplambdaserialization.lib;
 
 import java.nio.ByteBuffer;
 import java.util.List;
-import pl.andrzejressel.sjs.serializator.Serializator;
+import pl.andrzejressel.dto.serializator.Serializator;
 
 public abstract class SerializableInputFunctionN extends SerializableFunctionN {
   public abstract List<Serializator<Object>> getInputSerializators();

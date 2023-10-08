@@ -1,4 +1,3 @@
 package com.test.additionalkeep;
 
-public class AdditionalClass {
-}
+public class AdditionalClass {}

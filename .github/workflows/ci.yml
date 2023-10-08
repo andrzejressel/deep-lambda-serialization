@@ -27,9 +27,7 @@ jobs:
     - name: Build with Gradle
       uses: gradle/gradle-build-action@v2.9.0
       with:
-        arguments: |
-          check
-          -Pgpr.token=${{ secrets.GITHUB_TOKEN }}
+        arguments: check
     - name: Upload coverage reports to Codecov
       if: matrix.os == 'ubuntu-latest' && matrix.java_version == '11'
       uses: codecov/codecov-action@v3

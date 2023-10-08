@@ -8,7 +8,7 @@ ztzip = "1.16"
 proguard = "7.3.2"
 commonslang3 = "3.13.0"
 jetbrains-annotations = "24.0.1"
-sjs = "0.0.2"
+dto-serializator = "0.0.3"
 spotless = "6.22.0"
 
 [libraries]
@@ -21,7 +21,7 @@ ztzip = { module = "org.zeroturnaround:zt-zip", version.ref = "ztzip" }
 proguard = { module = "com.guardsquare:proguard-base", version.ref = "proguard" }
 commons-lang3 = { module = "org.apache.commons:commons-lang3", version.ref="commonslang3" }
 jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "jetbrains-annotations" }
-sjs = { module = "pl.andrzejressel.sjs:serializator", version.ref = "sjs" }
+dto-serializator = { module = "pl.andrzejressel.dto:serializator", version.ref = "dto-serializator" }
 
 [bundles]
 

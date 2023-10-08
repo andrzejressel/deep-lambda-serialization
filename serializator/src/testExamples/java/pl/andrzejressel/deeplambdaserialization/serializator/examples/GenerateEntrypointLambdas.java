@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test;
 import pl.andrzejressel.deeplambdaserialization.lib.SerializableFunction2;
 import pl.andrzejressel.deeplambdaserialization.lib.SerializableInputFunction2;
 import pl.andrzejressel.deeplambdaserialization.lib.SerializableInputOutputFunction2;
-import pl.andrzejressel.sjs.serializator.IntegerSerializator;
-import pl.andrzejressel.sjs.serializator.Serializator;
-import pl.andrzejressel.sjs.serializator.StringSerializator;
+import pl.andrzejressel.dto.serializator.IntegerSerializator;
+import pl.andrzejressel.dto.serializator.Serializator;
+import pl.andrzejressel.dto.serializator.StringSerializator;
 
 @SuppressWarnings("NewClassNamingConvention")
 public class GenerateEntrypointLambdas extends AbstractLambdaGeneratorTest {
