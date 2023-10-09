@@ -28,7 +28,7 @@ class EntrypointTest {
     val cl =
         URLClassLoader("test", arrayOf(jar.toFile().toURI().toURL()), this::class.java.classLoader)
 
-    val clz = cl.loadClass("EntryPoint")
+    val clz = cl.loadClass("pl.andrzejressel.deeplambdaserialization.entrypoint.EntryPoint")
 
     val executeMethod = getExecuteMethod(clz)
     assertThat(executeMethod.invoke(arrayOf(1, 2))).isEqualTo("3")
@@ -58,7 +58,7 @@ class EntrypointTest {
     val cl =
         URLClassLoader("test", arrayOf(jar.toFile().toURI().toURL()), this::class.java.classLoader)
 
-    val clz = cl.loadClass("EntryPoint")
+    val clz = cl.loadClass("pl.andrzejressel.deeplambdaserialization.entrypoint.EntryPoint")
 
     val executeMethod = getExecuteMethod(clz)
     assertThat(executeMethod.invoke(arrayOf(1, 2))).isEqualTo("3")
@@ -87,7 +87,7 @@ class EntrypointTest {
     val cl =
         URLClassLoader("test", arrayOf(jar.toFile().toURI().toURL()), this::class.java.classLoader)
 
-    val clz = cl.loadClass("EntryPoint")
+    val clz = cl.loadClass("pl.andrzejressel.deeplambdaserialization.entrypoint.EntryPoint")
 
     val executeMethod = getExecuteMethod(clz)
     assertThat(executeMethod.invoke(arrayOf(1, 2))).isEqualTo("3")

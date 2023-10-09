@@ -52,20 +52,6 @@ abstract class AbstractLambdaGeneratorTest {
     val supportLibList =
         supportLib.split(",").filter { it.isNotEmpty() }.map { Paths.get(it) }.toSet()
 
-    //        val classPath = System.getProperty("java.class.path").split(';')
-    //            .asSequence()
-    //            .map { Paths.get(it) }
-    //            .distinct()
-    //            .filterNot { it.toString().contains("groovy") }
-    //            .filterNot { it.toString().contains("gradle-worker.jar") }
-    //            .filterNot { it.last().toString().contains("gradle") }
-    //            .filterNot { it.toString().contains("bytebuddy") }
-    //            .filterNot { it.toString().contains("log4j") }
-    //            .filterNot { it.toString().contains("wrapper") }
-    //            .toList()
-
-    //        Assertions.assertThat(classPath).contains(javaClzDir, kotlinClzDir)
-
     val applicationClassPath = setOf(javaClzDir, kotlinClzDir)
 
     return LambdaSerializator(

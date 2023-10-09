@@ -30,12 +30,12 @@ subprojects {
   afterEvaluate {
     configure<com.diffplug.gradle.spotless.SpotlessExtension> {
       kotlin {
-        target("src/integrationTest/resources/**/*.kt")
+        target("src/**/*.kt")
         ktfmt()
       }
       kotlinGradle {
         target("*.gradle.kts") // default target for kotlinGradle
-        target("src/integrationTest/resources/**/*.gradle.kts")
+        target("src/**/*.gradle.kts")
         ktfmt() // or ktfmt() or prettier()
       }
       java {
@@ -43,8 +43,7 @@ subprojects {
         removeUnusedImports()
         cleanthat()
         googleJavaFormat()
-        targetExclude("build/generated/**/*.java")
-        target("src/integrationTest/resources/**/*.java")
+        target("src/**/*.java")
       }
     }
   }
