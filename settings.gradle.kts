@@ -1,3 +1,3 @@
 rootProject.name = "deep-lambda-serialization"
 
-include(":gradle-plugin", ":lib", ":serializator")
+include(":gradle-plugin", ":lib", ":serializator", ":entrypoint")

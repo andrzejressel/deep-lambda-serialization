@@ -20,7 +20,7 @@ class LambdaSerializatorTest {
     val cl =
         URLClassLoader("test", arrayOf(jar.toFile().toURI().toURL()), this::class.java.classLoader)
 
-    val clz = cl.loadClass("EntryPoint")
+    val clz = cl.loadClass("pl.andrzejressel.deeplambdaserialization.entrypoint.EntryPoint")
 
     val constructorMethodType = MethodType.methodType(Any::class.java, Array<Any>::class.java)
     val constructorMethodHandle =
@@ -40,7 +40,7 @@ class LambdaSerializatorTest {
     val cl =
         URLClassLoader("test", arrayOf(jar.toFile().toURI().toURL()), this::class.java.classLoader)
 
-    val clz = cl.loadClass("EntryPoint")
+    val clz = cl.loadClass("pl.andrzejressel.deeplambdaserialization.entrypoint.EntryPoint")
 
     val constructorMethodType = MethodType.methodType(Any::class.java, Array<Any>::class.java)
     val constructorMethodHandle =

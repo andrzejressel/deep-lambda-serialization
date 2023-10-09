@@ -41,7 +41,6 @@ val generateBuildInfo by
             
             public class BuildInfo {
                 public static String version = "${this.inputs.properties["version"]}";
-                public static String jarTag = "deep-lambda-serialization-lib";
             }
             """
                 .trimIndent()
@@ -207,14 +206,6 @@ publishing {
         password = System.getenv("GITHUB_TOKEN")
       }
     }
-  }
-}
-
-tasks.jar {
-  manifest {
-    attributes(
-        "deep-lambda-serialization-lib" to "true",
-    )
   }
 }
 

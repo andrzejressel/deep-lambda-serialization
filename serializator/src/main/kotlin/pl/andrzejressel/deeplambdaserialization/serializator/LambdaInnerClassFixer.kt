@@ -68,7 +68,7 @@ object LambdaInnerClassFixer {
         ClassBuilder(
             VersionConstants.CLASS_VERSION_1_8,
             AccessConstants.PUBLIC,
-            "EntryPoint",
+            "pl/andrzejressel/deeplambdaserialization/entrypoint/EntryPoint",
             ClassConstants.NAME_JAVA_LANG_OBJECT)
 
     programClassBuilder.addMethod(

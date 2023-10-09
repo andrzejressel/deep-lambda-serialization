@@ -21,9 +21,9 @@ class DeepSerializationPluginFunctionalTest {
             "com.example.project.Main\$1.jar" to
                 setOf(
                     "META-INF/MANIFEST.MF",
-                    "EntryPoint.class",
                     "com/example/project/Main.class",
                     "com/example/project/Main$1.class",
+                    "pl/andrzejressel/deeplambdaserialization/entrypoint/EntryPoint.class",
                     "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunction0.class",
                     "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunctionN.class",
                 ))
@@ -38,7 +38,6 @@ class DeepSerializationPluginFunctionalTest {
         mapOf(
             "com.example.project.MainKt\$main\$lambda\$1.jar" to
                 setOf(
-                    "EntryPoint.class",
                     "com/example/project/MainKt.class",
                     "com/example/project/MainKt\$main\$lambda$1.class",
                     "kotlin/collections/ArraysKt.class",
@@ -76,6 +75,7 @@ class DeepSerializationPluginFunctionalTest {
                     "kotlin/text/StringsKt__StringsKt.class",
                     "kotlin/text/StringsKt___StringsJvmKt.class",
                     "kotlin/text/StringsKt___StringsKt.class",
+                    "pl/andrzejressel/deeplambdaserialization/entrypoint/EntryPoint.class",
                     "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunction0.class",
                     "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunctionN.class",
                     "META-INF/MANIFEST.MF"))
@@ -91,19 +91,19 @@ class DeepSerializationPluginFunctionalTest {
             "com.test.withlib.Main$1.jar" to
                 setOf(
                     "META-INF/MANIFEST.MF",
-                    "EntryPoint.class",
                     "com/test/lib/SharedLib.class",
                     "com/test/withlib/Main.class",
                     "com/test/withlib/Main$1.class",
+                    "pl/andrzejressel/deeplambdaserialization/entrypoint/EntryPoint.class",
                     "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunction0.class",
                     "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunctionN.class",
                 ),
             "com.test.withoutlib.Main$1.jar" to
                 setOf(
                     "META-INF/MANIFEST.MF",
-                    "EntryPoint.class",
                     "com/test/withoutlib/Main.class",
                     "com/test/withoutlib/Main$1.class",
+                    "pl/andrzejressel/deeplambdaserialization/entrypoint/EntryPoint.class",
                     "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunction0.class",
                     "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunctionN.class"),
         )
@@ -118,9 +118,9 @@ class DeepSerializationPluginFunctionalTest {
         mapOf(
             "com.test.lib.SharedLib$1.jar" to
                 setOf(
-                    "EntryPoint.class",
                     "com/test/lib/SharedLib.class",
                     "com/test/lib/SharedLib$1.class",
+                    "pl/andrzejressel/deeplambdaserialization/entrypoint/EntryPoint.class",
                     "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunction0.class",
                     "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunctionN.class",
                     "META-INF/MANIFEST.MF"))
@@ -135,10 +135,10 @@ class DeepSerializationPluginFunctionalTest {
         mapOf(
             "com.test.additionalkeep.Main$1.jar" to
                 setOf(
-                    "EntryPoint.class",
                     "com/test/additionalkeep/AdditionalClass.class",
                     "com/test/additionalkeep/Main.class",
                     "com/test/additionalkeep/Main$1.class",
+                    "pl/andrzejressel/deeplambdaserialization/entrypoint/EntryPoint.class",
                     "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunction0.class",
                     "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunctionN.class",
                     "META-INF/MANIFEST.MF"))
