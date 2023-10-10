@@ -24,7 +24,7 @@ version =
         "main-SNAPSHOT"
       }
     } else {
-      "DEV"
+      "DEV-SNAPSHOT"
     }
 
 configure<com.diffplug.gradle.spotless.SpotlessExtension> {
