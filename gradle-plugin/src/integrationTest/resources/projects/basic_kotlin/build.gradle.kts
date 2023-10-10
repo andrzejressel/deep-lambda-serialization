@@ -9,6 +9,6 @@ repositories {
   mavenLocal()
 }
 
-dependencies { implementation("pl.andrzejressel.djcs:lib:DEV") }
+dependencies { implementation("pl.andrzejressel.deeplambdaserialization:lib:DEV-SNAPSHOT") }
 
 application { mainClass.set("com.example.project.MainKt") }

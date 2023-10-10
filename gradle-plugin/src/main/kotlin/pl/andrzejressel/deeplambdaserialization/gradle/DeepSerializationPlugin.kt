@@ -39,7 +39,7 @@ class DeepSerializationPlugin : Plugin<Project> {
     val allClasses = project.configurations.named("runtimeClasspath")
 
     project.dependencies {
-      add(implementation.name, "pl.andrzejressel.djcs:lib:${BuildInfo.version}")
+      add(implementation.name, "pl.andrzejressel.deeplambdaserialization:lib:${BuildInfo.version}")
     }
 
     val ext =

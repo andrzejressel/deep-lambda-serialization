@@ -2,7 +2,7 @@ import pl.andrzejressel.deeplambdaserialization.gradle.DeepSerializationPluginEx
 
 plugins {
   application
-  id("pl.andrzejressel.deeplambdaserialization") version "DEV"
+  id("pl.andrzejressel.deeplambdaserialization") version "DEV-SNAPSHOT"
 }
 
 dependencies { implementation(project(":lib")) }
