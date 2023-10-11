@@ -1,7 +1,9 @@
 package pl.andrzejressel.deeplambdaserialization.serializator
 
 import java.io.File
+import java.nio.file.Files
 import java.nio.file.Path
+import java.nio.file.StandardCopyOption.REPLACE_EXISTING
 import java.util.*
 import kotlin.io.path.absolutePathString
 import kotlin.io.path.createDirectories
@@ -28,6 +30,7 @@ class LambdaSerializator(
     private val supportLib: Set<Path>,
     classes: Set<Path>,
     private val output: Path,
+    private val tmpDirectory: Path,
     private val additionalProguardOptions: List<String>
 ) {
 
@@ -37,6 +40,7 @@ class LambdaSerializator(
 
   init {
     output.createDirectories()
+    tmpDirectory.createDirectories()
 
     dependencies.intersect(supportLib).run {
       if (isNotEmpty()) {
@@ -50,7 +54,7 @@ class LambdaSerializator(
     initializeClassPools(programClassPool, libraryClassPool)
     programClassPool.classesAccept(MakeEverythingPublic())
 
-    val programClasses = output.resolve("program_classes").toFile()
+    val programClasses = tmpDirectory.resolve("program_classes").toFile()
     programClassPool.classesAccept(DataEntryClassWriter(DirectoryWriter(programClasses)))
     this.classesDir = programClasses.toPath()
 
@@ -74,7 +78,7 @@ class LambdaSerializator(
 
     println("PROGUARD START: ${Date()}")
 
-    val outputFile = output.resolve("${base64lambdaClassName}.step1.jar").toFile()
+    val outputFile = tmpDirectory.resolve("${base64lambdaClassName}.step1.jar").toFile()
     outputFile.parentFile.toPath().createDirectories()
 
     val injars = buildList {
@@ -126,7 +130,12 @@ class LambdaSerializator(
 
     println("PROGUARD END: ${Date()}")
 
-    return LambdaInnerClassFixer.run(outputFile, supportLib, className)
+    val file = LambdaInnerClassFixer.run(outputFile, supportLib, className)
+    val destFile = output.resolve(file.name)
+
+    Files.copy(file.toPath(), destFile, REPLACE_EXISTING)
+
+    return destFile.toFile()
   }
 
   private fun initializeClassPools(programClassPool: ClassPool, libraryClassPool: ClassPool) {
