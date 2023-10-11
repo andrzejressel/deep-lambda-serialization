@@ -59,6 +59,7 @@ abstract class AbstractLambdaGeneratorTest {
         supportLibList,
         applicationClassPath,
         Paths.get("build", "examples", "jars"),
+        Paths.get("build", "tmp", "examples", "jars"),
         listOf())
   }
 }

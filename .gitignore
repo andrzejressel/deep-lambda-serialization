@@ -1,4 +1,3 @@
 .gradle
-.idea
 build
 gradle-plugin/**/integrationTest/**/gradle

@@ -47,6 +47,7 @@ class DeepSerializationPlugin : Plugin<Project> {
             "deepSerializationPluginExtension",
         )
 
+    val tmpDir = project.layout.buildDirectory.dir("tmp/deep_serializator_plugin")
     val jarDirs = project.layout.buildDirectory.dir("generated/deep_serializator_plugin_jars")
 
     val dependencies =
@@ -83,6 +84,7 @@ class DeepSerializationPlugin : Plugin<Project> {
           }
           this.additionalProguardOptions.set(ext.additionalProguardOptions)
           output.set(jarDirs)
+          tmpOutput.set(tmpDir)
           dependsOn(subprojectsJarProjects)
         }
 
