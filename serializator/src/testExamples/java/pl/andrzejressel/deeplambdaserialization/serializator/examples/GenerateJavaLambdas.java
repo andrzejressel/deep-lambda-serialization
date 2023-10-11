@@ -11,13 +11,11 @@ public class GenerateJavaLambdas extends AbstractLambdaGeneratorTest {
   public void generateJavaLambda() {
     var tag = "java_basic";
 
-    save(
-        tag,
-        new SerializableFunction2<Integer, Integer, String>() {
-          @Override
-          public String execute(Integer integer, Integer integer2) {
-            return MessageFormat.format("{0}", integer + integer2);
-          }
-        });
+    save(tag, new SerializableFunction2<Integer, Integer, String>() {
+      @Override
+      public String execute(Integer integer, Integer integer2) {
+        return MessageFormat.format("{0}", integer + integer2);
+      }
+    });
   }
 }

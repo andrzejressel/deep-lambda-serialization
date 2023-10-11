@@ -40,18 +40,20 @@ subprojects {
       kotlin {
         target("src/**/*.kt")
         ktfmt()
+        endWithNewline()
       }
       kotlinGradle {
-        target("*.gradle.kts") // default target for kotlinGradle
-        target("src/**/*.gradle.kts")
+        target("*.gradle.kts", "src/**/*.gradle.kts") // default target for kotlinGradle
         ktfmt() // or ktfmt() or prettier()
+        endWithNewline()
       }
       java {
         importOrder()
         removeUnusedImports()
         cleanthat()
-        googleJavaFormat()
-        target("src/**/*.java")
+        palantirJavaFormat().style("GOOGLE")
+        target("src/**/*.java", "build/generated/sources/serializable_function/**/*.java")
+        endWithNewline()
       }
     }
   }

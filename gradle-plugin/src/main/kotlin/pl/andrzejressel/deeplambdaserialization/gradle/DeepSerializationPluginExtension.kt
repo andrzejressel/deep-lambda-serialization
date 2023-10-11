@@ -6,6 +6,7 @@ import org.gradle.api.tasks.Input
 
 interface DeepSerializationPluginExtension {
   @get:Input val availableModules: ListProperty<SimpleModule>
+
   @get:Input val additionalProguardOptions: ListProperty<String>
 
   fun addProject(project: Project) {

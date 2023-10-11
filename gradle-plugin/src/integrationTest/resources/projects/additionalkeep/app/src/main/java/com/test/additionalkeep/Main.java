@@ -7,13 +7,12 @@ import pl.andrzejressel.dto.serializator.*;
 public class Main {
 
   public static void main(String[] args) {
-    var lambda =
-        new SerializableFunction0<String>() {
-          @Override
-          public String execute() {
-            return "";
-          }
-        };
+    var lambda = new SerializableFunction0<String>() {
+      @Override
+      public String execute() {
+        return "";
+      }
+    };
 
     var url = DeepLambdaSerialization.getJar(lambda);
     System.out.println("JAR: [" + url + "]");

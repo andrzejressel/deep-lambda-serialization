@@ -11,16 +11,18 @@ import org.gradle.api.tasks.TaskAction
 import pl.andrzejressel.deeplambdaserialization.serializator.LambdaSerializator
 
 abstract class GenerateLambdaJars : DefaultTask() {
-
   @get:InputFiles abstract val allClasses: ListProperty<File>
+
   @get:InputFiles abstract val dependencies: ListProperty<File>
+
   @get:InputFiles abstract val classes: ListProperty<File>
+
   @get:Input abstract val additionalProguardOptions: ListProperty<String>
+
   @get:OutputDirectory abstract val output: DirectoryProperty
 
   @TaskAction
   fun generate() {
-
     val other =
         allClasses.get().map { it.toPath() }.toSet() -
             dependencies.get().map { it.toPath() }.toSet()
@@ -36,7 +38,8 @@ abstract class GenerateLambdaJars : DefaultTask() {
             supportLib = dependencies.get().map { it.toPath() }.toSet(),
             classes = classes.get().map { it.toPath() }.toSet(),
             output = output.get().asFile.toPath().resolve("META-INF"),
-            additionalProguardOptions = additionalProguardOptions.get())
+            additionalProguardOptions = additionalProguardOptions.get(),
+        )
 
     logger.debug("Classes to generate: [{}]", sl.getClasses())
 

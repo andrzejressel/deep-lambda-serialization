@@ -1,3 +1,5 @@
+import com.palantir.javaformat.java.Formatter
+import com.palantir.javaformat.java.JavaFormatterOptions
 import java.nio.file.Files
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
@@ -13,6 +15,8 @@ plugins {
   alias(libs.plugins.spotless)
   id("com.vanniktech.maven.publish")
 }
+
+buildscript { dependencies { classpath("com.palantir.javaformat:palantir-java-format:2.38.0") } }
 
 repositories { mavenCentral() }
 
@@ -41,7 +45,7 @@ val generateBuildInfo by
             package pl.andrzejressel.deeplambdaserialization.lib;
             
             public class BuildInfo {
-                public static String version = "${this.inputs.properties["version"]}";
+              public static String version = "${this.inputs.properties["version"]}";
             }
             """
                 .trimIndent()
@@ -73,14 +77,14 @@ val generateSerializableFunction by
                   .joinToString(separator = ", ")
           val serializatorFields =
               alphabet.take(i).joinToString(separator = "\n") { c ->
-                "                    protected abstract Serializator<$c> get${c}Serializator();"
+                "                    protected abstract Serializator<$c> getArg${c - 'A' + 1}Serializator();"
               }
 
           val getArgumentSerializatorContent =
               alphabet
                   .take(i)
                   .map { c ->
-                    "                    l.add((Serializator<Object>) get${c}Serializator());"
+                    "                    l.add((Serializator<Object>) getArg${c - 'A' + 1}Serializator());"
                   }
                   .joinToString(separator = "\n")
           val getArgumentsSerializator =
@@ -102,10 +106,6 @@ val generateSerializableFunction by
               """
                                 package pl.andrzejressel.deeplambdaserialization.lib;
                                 
-                                import pl.andrzejressel.dto.serializator.Serializator;
-                                import java.util.ArrayList;
-                                import java.util.List;
-                                
                                 public abstract class SerializableFunction$i<$genericClasses> extends SerializableFunctionN {
                                     public abstract RET execute($arguments);
                                     @Override
@@ -124,9 +124,9 @@ val generateSerializableFunction by
               """
                                 package pl.andrzejressel.deeplambdaserialization.lib;
                                 
-                                import pl.andrzejressel.dto.serializator.Serializator;
                                 import java.util.ArrayList;
                                 import java.util.List;
+                                import pl.andrzejressel.dto.serializator.Serializator;
 
                                 public abstract class SerializableInputFunction$i<$genericClasses> extends SerializableInputFunctionN {
                                     public abstract RET execute($arguments);
@@ -148,9 +148,9 @@ val generateSerializableFunction by
               """
                                 package pl.andrzejressel.deeplambdaserialization.lib;
                                 
-                                import pl.andrzejressel.dto.serializator.Serializator;
                                 import java.util.ArrayList;
                                 import java.util.List;
+                                import pl.andrzejressel.dto.serializator.Serializator;
 
                                 public abstract class SerializableInputOutputFunction$i<$genericClasses> extends SerializableInputOutputFunctionN {
                                     public abstract RET execute($arguments);
@@ -173,10 +173,19 @@ val generateSerializableFunction by
                 """
                   .trimIndent()
 
-          Files.writeString(classDir.resolve("SerializableFunction$i.java"), serializableFunction)
-          Files.writeString(classDir.resolve("SerializableInputFunction$i.java"), inputClz)
+          val formatter =
+              Formatter.createFormatter(
+                  JavaFormatterOptions.builder().style(JavaFormatterOptions.Style.GOOGLE).build())
+
           Files.writeString(
-              classDir.resolve("SerializableInputOutputFunction$i.java"), inputOutputClz)
+              classDir.resolve("SerializableFunction$i.java"),
+              formatter.formatSource(serializableFunction))
+          Files.writeString(
+              classDir.resolve("SerializableInputFunction$i.java"),
+              formatter.formatSource(inputClz))
+          Files.writeString(
+              classDir.resolve("SerializableInputOutputFunction$i.java"),
+              formatter.formatSource(inputOutputClz))
         }
       }
     }
@@ -188,17 +197,17 @@ val mvnArtifactId = name
 val mvnVersion = parent!!.version.toString()
 
 mavenPublishing {
-    coordinates(mvnGroupId, mvnArtifactId, mvnVersion)
+  coordinates(mvnGroupId, mvnArtifactId, mvnVersion)
 
-    pom {
-        licenses {
-            license {
-                name = "Gnu Lesser General Public License"
-                url = "http://www.gnu.org/licenses/lgpl.txt"
-                distribution = "http://www.gnu.org/licenses/lgpl.txt"
-            }
-        }
+  pom {
+    licenses {
+      license {
+        name = "Gnu Lesser General Public License"
+        url = "http://www.gnu.org/licenses/lgpl.txt"
+        distribution = "http://www.gnu.org/licenses/lgpl.txt"
+      }
     }
+  }
 }
 
 tasks.jacocoTestReport {
@@ -209,3 +218,5 @@ tasks.jacocoTestReport {
 }
 
 tasks.named("check") { dependsOn("jacocoTestReport") }
+
+afterEvaluate { tasks.named("spotlessJava") { dependsOn("generateSerializableFunction") } }

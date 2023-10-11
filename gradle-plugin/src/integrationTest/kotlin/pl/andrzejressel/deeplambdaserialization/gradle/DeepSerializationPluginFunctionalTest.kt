@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test
 import org.zeroturnaround.zip.ZipUtil
 
 class DeepSerializationPluginFunctionalTest {
-
   private val jarPattern = Pattern.compile("JAR: \\[(.*)]")!!
 
   @Test
@@ -26,7 +25,8 @@ class DeepSerializationPluginFunctionalTest {
                     "pl/andrzejressel/deeplambdaserialization/entrypoint/EntryPoint.class",
                     "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunction0.class",
                     "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunctionN.class",
-                ))
+                ),
+        )
     val projectName = "basic"
 
     runTest(projectName, expectedClasses)
@@ -78,7 +78,9 @@ class DeepSerializationPluginFunctionalTest {
                     "pl/andrzejressel/deeplambdaserialization/entrypoint/EntryPoint.class",
                     "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunction0.class",
                     "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunctionN.class",
-                    "META-INF/MANIFEST.MF"))
+                    "META-INF/MANIFEST.MF",
+                ),
+        )
     val projectName = "basic_kotlin"
 
     runTest(projectName, expectedClasses)
@@ -105,7 +107,8 @@ class DeepSerializationPluginFunctionalTest {
                     "com/test/withoutlib/Main$1.class",
                     "pl/andrzejressel/deeplambdaserialization/entrypoint/EntryPoint.class",
                     "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunction0.class",
-                    "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunctionN.class"),
+                    "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunctionN.class",
+                ),
         )
     val projectName = "subproject"
 
@@ -123,7 +126,9 @@ class DeepSerializationPluginFunctionalTest {
                     "pl/andrzejressel/deeplambdaserialization/entrypoint/EntryPoint.class",
                     "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunction0.class",
                     "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunctionN.class",
-                    "META-INF/MANIFEST.MF"))
+                    "META-INF/MANIFEST.MF",
+                ),
+        )
     val projectName = "jarfromlib"
 
     runTest(projectName, expectedClasses)
@@ -141,13 +146,18 @@ class DeepSerializationPluginFunctionalTest {
                     "pl/andrzejressel/deeplambdaserialization/entrypoint/EntryPoint.class",
                     "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunction0.class",
                     "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunctionN.class",
-                    "META-INF/MANIFEST.MF"))
+                    "META-INF/MANIFEST.MF",
+                ),
+        )
     val projectName = "additionalkeep"
 
     runTest(projectName, expectedClasses)
   }
 
-  private fun runTest(projectName: String, expectedClasses: Map<String, Set<String>>) {
+  private fun runTest(
+      projectName: String,
+      expectedClasses: Map<String, Set<String>>,
+  ) {
     val dir = Paths.get(javaClass.getResource("/integration.pointer")!!.toURI()).parent
     // Run the build
     val result =
@@ -193,7 +203,8 @@ class DeepSerializationPluginFunctionalTest {
             l.add(entry.name)
           }
         },
-        Charsets.UTF_8)
+        Charsets.UTF_8,
+    )
     return l
   }
 
