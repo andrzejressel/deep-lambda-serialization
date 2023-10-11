@@ -16,13 +16,13 @@ import pl.andrzejressel.deeplambdaserialization.lib.BuildInfo
 @Suppress("unused")
 class DeepSerializationPlugin : Plugin<Project> {
   override fun apply(project: Project) {
-
     val implementation =
         try {
           project.configurations.getAt("implementation")
         } catch (e: UnknownConfigurationException) {
           project.logger.error(
-              "Cannot find 'implementation' configuration. Probably java plugin is not applied")
+              "Cannot find 'implementation' configuration. Probably java plugin is not applied",
+          )
           throw e
         }
 
@@ -44,7 +44,8 @@ class DeepSerializationPlugin : Plugin<Project> {
 
     val ext =
         project.extensions.create<DeepSerializationPluginExtension>(
-            "deepSerializationPluginExtension")
+            "deepSerializationPluginExtension",
+        )
 
     val jarDirs = project.layout.buildDirectory.dir("generated/deep_serializator_plugin_jars")
 
@@ -71,12 +72,14 @@ class DeepSerializationPlugin : Plugin<Project> {
           classes.set(
               compileJavaTask.map {
                 it.outputs.files.filter { it.isDirectory || it.extension == "jar" }
-              })
+              },
+          )
           if (compileKotlinTask != null) {
             classes.addAll(
                 compileKotlinTask.map {
                   it.outputs.files.filter { it.isDirectory || it.extension == "jar" }
-                })
+                },
+            )
           }
           this.additionalProguardOptions.set(ext.additionalProguardOptions)
           output.set(jarDirs)
@@ -88,7 +91,7 @@ class DeepSerializationPlugin : Plugin<Project> {
 
   private fun getAllModules(
       dep: ResolvedDependency,
-      modules: List<SimpleModule>
+      modules: List<SimpleModule>,
   ): Set<ResolvedDependency> {
     val p = SimpleModule(dep.moduleGroup, dep.moduleName)
     return if (modules.contains(p)) {
