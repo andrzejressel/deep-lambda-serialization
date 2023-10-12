@@ -25,21 +25,38 @@ object LambdaInnerClassFixer {
 
     initializeClassPools(programClassPool, libraryClassPool)
 
-    val serializableFunction =
+    val serializableFunction: Clazz? =
         libraryClassPool.getClass(SerializableFunctionN::class.java.name.replace('.', '/'))
             ?: programClassPool.getClass(SerializableFunctionN::class.java.name.replace('.', '/'))
-                ?: throw RuntimeException("Cannot find SerializableFunctionN")
 
-    val serializableInputFunction =
+    val serializableFunctionWithContext: Clazz? =
+        libraryClassPool.getClass(
+            SerializableFunctionWithContextN::class.java.name.replace('.', '/'))
+            ?: programClassPool.getClass(
+                SerializableFunctionWithContextN::class.java.name.replace('.', '/'))
+
+    val serializableInputFunction: Clazz? =
         libraryClassPool.getClass(SerializableInputFunctionN::class.java.name.replace('.', '/'))
             ?: programClassPool.getClass(
                 SerializableInputFunctionN::class.java.name.replace('.', '/'))
 
-    val serializableInputOutputFunction =
+    val serializableInputFunctionWithContext: Clazz? =
+        libraryClassPool.getClass(
+            SerializableInputFunctionWithContextN::class.java.name.replace('.', '/'))
+            ?: programClassPool.getClass(
+                SerializableInputFunctionWithContextN::class.java.name.replace('.', '/'))
+
+    val serializableInputOutputFunction: Clazz? =
         libraryClassPool.getClass(
             SerializableInputOutputFunctionN::class.java.name.replace('.', '/'))
             ?: programClassPool.getClass(
                 SerializableInputOutputFunctionN::class.java.name.replace('.', '/'))
+
+    val serializableInputOutputFunctionWithContext: Clazz? =
+        libraryClassPool.getClass(
+            SerializableInputOutputFunctionWithContextN::class.java.name.replace('.', '/'))
+            ?: programClassPool.getClass(
+                SerializableInputOutputFunctionWithContextN::class.java.name.replace('.', '/'))
 
     val clz = programClassPool.getClass(className.proguardClassName) as ProgramClass
     val parentClzBase = clz.superClass
@@ -71,38 +88,81 @@ object LambdaInnerClassFixer {
             "pl/andrzejressel/deeplambdaserialization/entrypoint/EntryPoint",
             ClassConstants.NAME_JAVA_LANG_OBJECT)
 
-    programClassBuilder.addMethod(
-        AccessConstants.PUBLIC or AccessConstants.STATIC,
-        "execute",
-        "([Ljava/lang/Object;)Ljava/lang/Object;",
-        50) { code ->
-          val method =
-              serializableFunction.findMethod("execute", "([Ljava/lang/Object;)Ljava/lang/Object;")
-
-          code
-              .new_(cb)
-              .dup()
-              .invokespecial(cb, cb.findMethod("<init>", "()V"))
-              .aload_0()
-              .invokevirtual(serializableFunction, method)
-              .areturn()
-        }
-
-    if (serializableInputFunction != null && clz.extendsOrImplements(serializableInputFunction)) {
-      val clz = serializableInputFunction
-      val method = clz.findMethod("execute", "([[B)Ljava/lang/Object;")
-
+    if (serializableFunction != null && clz.extendsOrImplements(serializableFunction)) {
+      val method =
+          serializableFunction.findMethod("execute", "([Ljava/lang/Object;)Ljava/lang/Object;")
       programClassBuilder.addMethod(
           AccessConstants.PUBLIC or AccessConstants.STATIC,
           "execute",
-          method.getDescriptor(clz),
+          method.getDescriptor(serializableFunction),
           50) { code ->
             code
                 .new_(cb)
                 .dup()
                 .invokespecial(cb, cb.findMethod("<init>", "()V"))
                 .aload_0()
-                .invokevirtual(clz, method)
+                .invokevirtual(serializableFunction, method)
+                .areturn()
+          }
+    }
+
+    if (serializableFunctionWithContext != null &&
+        clz.extendsOrImplements(serializableFunctionWithContext)) {
+      val method =
+          serializableFunctionWithContext.findMethod(
+              "execute", "(Ljava/lang/Object;[Ljava/lang/Object;)Ljava/lang/Object;")
+      programClassBuilder.addMethod(
+          AccessConstants.PUBLIC or AccessConstants.STATIC,
+          "execute",
+          method.getDescriptor(serializableFunctionWithContext),
+          50) { code ->
+            code
+                .new_(cb)
+                .dup()
+                .invokespecial(cb, cb.findMethod("<init>", "()V"))
+                .aload_0()
+                .aload_1()
+                .invokevirtual(serializableFunctionWithContext, method)
+                .areturn()
+          }
+    }
+
+    if (serializableInputFunction != null && clz.extendsOrImplements(serializableInputFunction)) {
+      val method = serializableInputFunction.findMethod("execute", "([[B)Ljava/lang/Object;")
+
+      programClassBuilder.addMethod(
+          AccessConstants.PUBLIC or AccessConstants.STATIC,
+          "execute",
+          method.getDescriptor(serializableInputFunction),
+          50) { code ->
+            code
+                .new_(cb)
+                .dup()
+                .invokespecial(cb, cb.findMethod("<init>", "()V"))
+                .aload_0()
+                .invokevirtual(serializableInputFunction, method)
+                .areturn()
+          }
+    }
+
+    if (serializableInputFunctionWithContext != null &&
+        clz.extendsOrImplements(serializableInputFunctionWithContext)) {
+      val method =
+          serializableInputFunctionWithContext.findMethod(
+              "execute", "(Ljava/lang/Object;[[B)Ljava/lang/Object;")
+
+      programClassBuilder.addMethod(
+          AccessConstants.PUBLIC or AccessConstants.STATIC,
+          "execute",
+          method.getDescriptor(serializableInputFunctionWithContext),
+          50) { code ->
+            code
+                .new_(cb)
+                .dup()
+                .invokespecial(cb, cb.findMethod("<init>", "()V"))
+                .aload_0()
+                .aload_1()
+                .invokevirtual(serializableInputFunctionWithContext, method)
                 .areturn()
           }
     }
@@ -110,35 +170,78 @@ object LambdaInnerClassFixer {
     if (serializableInputOutputFunction != null &&
         clz.extendsOrImplements(serializableInputOutputFunction)) {
 
-      val clz = serializableInputOutputFunction
-      val objectMethod = clz.findMethod("executeAndSerialize", "([Ljava/lang/Object;)[B")
-      val byteArrayMethod = clz.findMethod("executeAndSerialize", "([[B)[B")
+      val objectMethod =
+          serializableInputOutputFunction.findMethod(
+              "executeAndSerialize", "([Ljava/lang/Object;)[B")
+      val byteArrayMethod =
+          serializableInputOutputFunction.findMethod("executeAndSerialize", "([[B)[B")
 
       programClassBuilder.addMethod(
           AccessConstants.PUBLIC or AccessConstants.STATIC,
           "executeAndSerialize",
-          objectMethod.getDescriptor(clz),
+          objectMethod.getDescriptor(serializableInputOutputFunction),
           50) { code ->
             code
                 .new_(cb)
                 .dup()
                 .invokespecial(cb, cb.findMethod("<init>", "()V"))
                 .aload_0()
-                .invokevirtual(clz, objectMethod)
+                .invokevirtual(serializableInputOutputFunction, objectMethod)
                 .areturn()
           }
 
       programClassBuilder.addMethod(
           AccessConstants.PUBLIC or AccessConstants.STATIC,
           "executeAndSerialize",
-          byteArrayMethod.getDescriptor(clz),
+          byteArrayMethod.getDescriptor(serializableInputOutputFunction),
           50) { code ->
             code
                 .new_(cb)
                 .dup()
                 .invokespecial(cb, cb.findMethod("<init>", "()V"))
                 .aload_0()
-                .invokevirtual(clz, byteArrayMethod)
+                .invokevirtual(serializableInputOutputFunction, byteArrayMethod)
+                .areturn()
+          }
+    }
+
+    if (serializableInputOutputFunctionWithContext != null &&
+        clz.extendsOrImplements(serializableInputOutputFunctionWithContext)) {
+
+      val objectMethod =
+          serializableInputOutputFunctionWithContext.findMethod(
+              "executeAndSerialize", "(Ljava/lang/Object;[Ljava/lang/Object;)[B")
+      val byteArrayMethod =
+          serializableInputOutputFunctionWithContext.findMethod(
+              "executeAndSerialize", "(Ljava/lang/Object;[[B)[B")
+
+      programClassBuilder.addMethod(
+          AccessConstants.PUBLIC or AccessConstants.STATIC,
+          "executeAndSerialize",
+          objectMethod.getDescriptor(serializableInputOutputFunctionWithContext),
+          50) { code ->
+            code
+                .new_(cb)
+                .dup()
+                .invokespecial(cb, cb.findMethod("<init>", "()V"))
+                .aload_0()
+                .aload_1()
+                .invokevirtual(serializableInputOutputFunctionWithContext, objectMethod)
+                .areturn()
+          }
+
+      programClassBuilder.addMethod(
+          AccessConstants.PUBLIC or AccessConstants.STATIC,
+          "executeAndSerialize",
+          byteArrayMethod.getDescriptor(serializableInputOutputFunctionWithContext),
+          50) { code ->
+            code
+                .new_(cb)
+                .dup()
+                .invokespecial(cb, cb.findMethod("<init>", "()V"))
+                .aload_0()
+                .aload_1()
+                .invokevirtual(serializableInputOutputFunctionWithContext, byteArrayMethod)
                 .areturn()
           }
     }

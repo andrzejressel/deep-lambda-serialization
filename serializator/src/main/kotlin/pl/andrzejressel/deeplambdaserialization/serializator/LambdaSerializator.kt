@@ -10,10 +10,7 @@ import kotlin.io.path.createDirectories
 import kotlin.io.path.exists
 import kotlin.io.path.isDirectory
 import org.zeroturnaround.zip.ZipUtil
-import pl.andrzejressel.deeplambdaserialization.lib.ClassName
-import pl.andrzejressel.deeplambdaserialization.lib.NameUtils
-import pl.andrzejressel.deeplambdaserialization.lib.ProguardClassName
-import pl.andrzejressel.deeplambdaserialization.lib.SerializableFunctionN
+import pl.andrzejressel.deeplambdaserialization.lib.*
 import proguard.Configuration
 import proguard.ConfigurationParser
 import proguard.ProGuard
@@ -59,9 +56,9 @@ class LambdaSerializator(
     this.classesDir = programClasses.toPath()
 
     serializableFunction =
-        libraryClassPool.getClass(SerializableFunctionN::class.java.name.replace('.', '/'))
-            ?: programClassPool.getClass(SerializableFunctionN::class.java.name.replace('.', '/'))
-                ?: throw RuntimeException("Cannot find SerializableFunctionN")
+        libraryClassPool.getClass(SerializableFunction::class.java.name.replace('.', '/'))
+            ?: programClassPool.getClass(SerializableFunction::class.java.name.replace('.', '/'))
+                ?: throw RuntimeException("Cannot find SerializableFunction")
     this.programClassPool = programClassPool
   }
 

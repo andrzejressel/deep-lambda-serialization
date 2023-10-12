@@ -4,10 +4,10 @@ import groovy.lang.Closure
 group = "pl.andrzejressel.deeplambdaserialization"
 
 plugins {
-  id("com.palantir.git-version") version "3.0.0"
-  alias(libs.plugins.kotlin).apply(false)
+  alias(libs.plugins.git.version)
+  alias(libs.plugins.kotlin) apply false
   alias(libs.plugins.spotless)
-  id("com.vanniktech.maven.publish") version "0.25.3" apply false
+  alias(libs.plugins.maven.publish) apply false
 }
 
 val versionDetails: Closure<VersionDetails> by extra

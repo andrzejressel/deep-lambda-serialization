@@ -10,6 +10,8 @@ commonslang3 = "3.13.0"
 jetbrains-annotations = "24.0.1"
 dto-serializator = "0.0.3"
 spotless = "6.22.0"
+git-version = "3.0.0"
+maven-publish = "0.25.3"
 
 [libraries]
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
@@ -29,3 +31,5 @@ dto-serializator = { module = "pl.andrzejressel.dto:serializator", version.ref =
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
+git-version = {id = "com.palantir.git-version", version.ref = "git-version"}
+maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish" }

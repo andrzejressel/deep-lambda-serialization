@@ -3,13 +3,12 @@ import kotlin.io.path.writeText
 import org.gradle.api.tasks.testing.logging.TestLogEvent
 
 plugins {
-  java
+  `java-library`
   `jvm-test-suite`
-  alias(libs.plugins.kotlin)
-  `maven-publish`
   jacoco
+  alias(libs.plugins.kotlin)
   alias(libs.plugins.spotless)
-  id("com.vanniktech.maven.publish")
+  alias(libs.plugins.maven.publish)
 }
 
 repositories { mavenCentral() }
@@ -20,8 +19,8 @@ dependencies {
   implementation(libs.proguard)
 }
 
-val libProject = project(":lib")
-
+// val libProject = project(":lib")
+//
 // val fromLib: Provider<List<File>> =
 //    configurations.runtimeClasspath.map {
 //      val firstLevel = it.resolvedConfiguration.firstLevelModuleDependencies
@@ -78,7 +77,7 @@ testing {
         }
 
     getByName<JvmTestSuite>("test") {
-      targets { all { testTask.configure { dependsOn(testExamples) } } }
+      //      targets { all { testTask.configure { dependsOn(testExamples) } } }
     }
 
     withType<JvmTestSuite> {
@@ -140,7 +139,7 @@ abstract class GenerateSerializatorBuildInfo : DefaultTask() {
 tasks.jacocoTestReport {
   dependsOn("test", "testExamples")
 
-  executionData.setFrom(fileTree(buildDir).include("/jacoco/*.exec"))
+  executionData.setFrom(fileTree(layout.buildDirectory).include("/jacoco/*.exec"))
   reports {
     xml.required = true
     html.required = true

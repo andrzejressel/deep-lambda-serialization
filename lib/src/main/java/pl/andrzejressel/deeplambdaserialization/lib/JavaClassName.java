@@ -3,7 +3,7 @@ package pl.andrzejressel.deeplambdaserialization.lib;
 public class JavaClassName implements ClassName {
   private final String className;
 
-  public JavaClassName(SerializableFunctionN f) {
+  public JavaClassName(SerializableFunction f) {
     this(f.getClass());
   }
 
