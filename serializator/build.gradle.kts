@@ -77,7 +77,7 @@ testing {
         }
 
     getByName<JvmTestSuite>("test") {
-      //      targets { all { testTask.configure { dependsOn(testExamples) } } }
+      targets { all { testTask.configure { dependsOn(testExamples) } } }
     }
 
     withType<JvmTestSuite> {
