@@ -4,11 +4,9 @@ plugins {
   `java-gradle-plugin`
   `kotlin-dsl`
   `jvm-test-suite`
-  alias(libs.plugins.kotlin)
-  `maven-publish`
   jacoco
   alias(libs.plugins.spotless)
-  id("com.vanniktech.maven.publish")
+  alias(libs.plugins.maven.publish)
 }
 
 repositories { mavenCentral() }
@@ -101,7 +99,7 @@ tasks.named("check") {
 tasks.jacocoTestReport {
   dependsOn("test", "integrationTest")
 
-  executionData.setFrom(fileTree(buildDir).include("/jacoco/*.exec"))
+  executionData.setFrom(fileTree(layout.buildDirectory).include("/jacoco/*.exec"))
   reports {
     xml.required = true
     html.required = true

@@ -6,13 +6,13 @@ import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
 import pl.andrzejressel.deeplambdaserialization.lib.JavaClassName
 import pl.andrzejressel.deeplambdaserialization.lib.NameUtils
-import pl.andrzejressel.deeplambdaserialization.lib.SerializableFunctionN
+import pl.andrzejressel.deeplambdaserialization.lib.SerializableFunction
 import pl.andrzejressel.deeplambdaserialization.serializator.BuildInfo
 import pl.andrzejressel.deeplambdaserialization.serializator.LambdaSerializator
 
 abstract class AbstractLambdaGeneratorTest {
 
-  protected fun save(name: String, f: SerializableFunctionN) {
+  protected fun save(name: String, f: SerializableFunction) {
     val projectPath: Path = BuildInfo.location
 
     synchronized(this) {

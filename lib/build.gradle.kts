@@ -10,10 +10,9 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
 plugins {
   `java-library`
   `jvm-test-suite`
-  `maven-publish`
   jacoco
   alias(libs.plugins.spotless)
-  id("com.vanniktech.maven.publish")
+  alias(libs.plugins.maven.publish)
 }
 
 buildscript { dependencies { classpath("com.palantir.javaformat:palantir-java-format:2.38.0") } }
@@ -68,12 +67,20 @@ val generateSerializableFunction by
 
         (0..32).forEach { i ->
           val genericClasses = (alphabet.take(i) + "RET").joinToString(separator = ", ")
+          val contextGenericClasses =
+              (alphabet.take(i) + "CONTEXT" + "RET").joinToString(separator = ", ")
           val arguments =
               alphabet.take(i).joinToString(separator = ", ") { c -> "$c ${c.lowercaseChar()}" }
+          val contextArguments =
+              (listOf("CONTEXT context") + alphabet.take(i).map { c -> "$c ${c.lowercaseChar()}" })
+                  .joinToString(", ")
           val arguments2 =
               alphabet
                   .take(i)
                   .mapIndexed { index, c -> "($c) args[$index]" }
+                  .joinToString(separator = ", ")
+          val contextArguments2 =
+              (listOf("context") + alphabet.take(i).mapIndexed { index, c -> "($c) args[$index]" })
                   .joinToString(separator = ", ")
           val serializatorFields =
               alphabet.take(i).joinToString(separator = "\n") { c ->
@@ -120,6 +127,24 @@ val generateSerializableFunction by
                 """
                   .trimIndent()
 
+          val serializableFunctionWithContext =
+              """
+                                package pl.andrzejressel.deeplambdaserialization.lib;
+                                
+                                public abstract class SerializableFunctionWithContext$i<$contextGenericClasses> extends SerializableFunctionWithContextN<CONTEXT> {
+                                    public abstract RET execute($contextArguments);
+                                    @Override
+                                    public final Object execute(CONTEXT context, Object[] args) {
+                                        if (args.length != $i) {
+                                            throw new IllegalArgumentException(String.format("Array must have $i ${if (i == 1) "element" else "elements"}, it has %d instead", args.length));
+                                        }
+                                        ${if (i != 0) "//noinspection unchecked" else ""}
+                                        return execute($contextArguments2);
+                                    }
+                                }
+                """
+                  .trimIndent()
+
           val inputClz =
               """
                                 package pl.andrzejressel.deeplambdaserialization.lib;
@@ -139,6 +164,30 @@ val generateSerializableFunction by
                                         }
                                         ${if (i != 0) "//noinspection unchecked" else ""}
                                         return execute($arguments2);
+                                    }
+                                }
+                """
+                  .trimIndent()
+
+          val serializableInputFunctionWithContext =
+              """
+                                package pl.andrzejressel.deeplambdaserialization.lib;
+                                
+                                import java.util.ArrayList;
+                                import java.util.List;
+                                import pl.andrzejressel.dto.serializator.Serializator;
+
+                                public abstract class SerializableInputFunctionWithContext$i<$contextGenericClasses> extends SerializableInputFunctionWithContextN<CONTEXT> {
+                                    public abstract RET execute($contextArguments);
+                $serializatorFields
+                $getArgumentsSerializator
+                                    @Override
+                                    public final Object execute(CONTEXT context, Object[] args) {
+                                        if (args.length != $i) {
+                                            throw new IllegalArgumentException(String.format("Array must have $i ${if (i == 1) "element" else "elements"}, it has %d instead", args.length));
+                                        }
+                                        ${if (i != 0) "//noinspection unchecked" else ""}
+                                        return execute($contextArguments2);
                                     }
                                 }
                 """
@@ -173,6 +222,35 @@ val generateSerializableFunction by
                 """
                   .trimIndent()
 
+          val inputOutputFunctionWithContext =
+              """
+                                package pl.andrzejressel.deeplambdaserialization.lib;
+                                
+                                import java.util.ArrayList;
+                                import java.util.List;
+                                import pl.andrzejressel.dto.serializator.Serializator;
+
+                                public abstract class SerializableInputOutputFunctionWithContext$i<$contextGenericClasses> extends SerializableInputOutputFunctionWithContextN<CONTEXT> {
+                                    public abstract RET execute($contextArguments);
+                                    public abstract Serializator<RET> getReturnSerializator();
+                $serializatorFields
+                $getArgumentsSerializator
+                                    @Override
+                                    public final Object execute(CONTEXT context, Object[] args) {
+                                        if (args.length != $i) {
+                                            throw new IllegalArgumentException(String.format("Array must have $i ${if (i == 1) "element" else "elements"}, it has %d instead", args.length));
+                                        }
+                                        ${if (i != 0) "//noinspection unchecked" else ""}
+                                        return execute($contextArguments2);
+                                    }
+                                    @Override
+                                    public final Serializator<Object> getOutputSerializator() {
+                                        return (Serializator<Object>) getReturnSerializator();
+                                    }
+                                }
+                """
+                  .trimIndent()
+
           val formatter =
               Formatter.createFormatter(
                   JavaFormatterOptions.builder().style(JavaFormatterOptions.Style.GOOGLE).build())
@@ -181,11 +259,20 @@ val generateSerializableFunction by
               classDir.resolve("SerializableFunction$i.java"),
               formatter.formatSource(serializableFunction))
           Files.writeString(
+              classDir.resolve("SerializableFunctionWithContext$i.java"),
+              formatter.formatSource(serializableFunctionWithContext))
+          Files.writeString(
               classDir.resolve("SerializableInputFunction$i.java"),
               formatter.formatSource(inputClz))
           Files.writeString(
+              classDir.resolve("SerializableInputFunctionWithContext$i.java"),
+              formatter.formatSource(serializableInputFunctionWithContext))
+          Files.writeString(
               classDir.resolve("SerializableInputOutputFunction$i.java"),
               formatter.formatSource(inputOutputClz))
+          Files.writeString(
+              classDir.resolve("SerializableInputOutputFunctionWithContext$i.java"),
+              formatter.formatSource(inputOutputFunctionWithContext))
         }
       }
     }

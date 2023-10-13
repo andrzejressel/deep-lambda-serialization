@@ -1,7 +1,7 @@
 plugins {
-  java
+  `java-library`
   alias(libs.plugins.spotless)
-  id("com.vanniktech.maven.publish")
+  alias(libs.plugins.maven.publish)
 }
 
 repositories { mavenCentral() }

@@ -2,7 +2,7 @@ package pl.andrzejressel.deeplambdaserialization.lib;
 
 public final class NameUtils {
 
-  public static String getJarName(SerializableFunctionN f) {
+  public static String getJarName(SerializableFunction f) {
     return getJarName(f.getClass());
   }
 
