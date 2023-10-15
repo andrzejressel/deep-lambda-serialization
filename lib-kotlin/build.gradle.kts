@@ -33,9 +33,9 @@ mavenPublishing {
   pom {
     licenses {
       license {
-        name = "The GNU General Public License v3.0"
-        url = "https://www.gnu.org/licenses/gpl-3.0.txt"
-        distribution = "https://www.gnu.org/licenses/gpl-3.0.txt"
+        name = "Gnu Lesser General Public License"
+        url = "http://www.gnu.org/licenses/lgpl.txt"
+        distribution = "http://www.gnu.org/licenses/lgpl.txt"
       }
     }
   }
