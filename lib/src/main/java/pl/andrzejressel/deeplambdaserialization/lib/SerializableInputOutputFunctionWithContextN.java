@@ -2,9 +2,9 @@ package pl.andrzejressel.deeplambdaserialization.lib;
 
 import pl.andrzejressel.dto.serializator.Serializator;
 
-public abstract class SerializableInputOutputFunctionWithContextN<CONTEXT>
-    extends SerializableInputFunctionWithContextN<CONTEXT> {
-  public abstract Serializator<Object> getOutputSerializator();
+public abstract class SerializableInputOutputFunctionWithContextN<RESULT, CONTEXT>
+    extends SerializableInputFunctionWithContextN<RESULT, CONTEXT> {
+  public abstract Serializator<RESULT> getOutputSerializator();
 
   public byte[] executeAndSerialize(CONTEXT context, Object[] args) {
     return getOutputSerializator().serialize(execute(context, args)).array();

@@ -50,7 +50,7 @@ public class GenerateEntrypointLambdasWithContext extends AbstractLambdaGenerato
       }
 
       @Override
-      public Serializator<String> getReturnSerializator() {
+      public Serializator<String> getOutputSerializator() {
         return StringSerializator.INSTANCE;
       }
 

@@ -2,19 +2,49 @@ package pl.andrzejressel.deeplambdaserialization.serializator.examples
 
 import java.text.MessageFormat
 import org.junit.jupiter.api.Test
-import pl.andrzejressel.deeplambdaserialization.lib.SerializableFunction2
+import pl.andrzejressel.deeplambdadeserialization.libkotlin.create
+import pl.andrzejressel.deeplambdadeserialization.libkotlin.createInput
+import pl.andrzejressel.deeplambdadeserialization.libkotlin.createInputOutput
 
 class GenerateKotlinLambdas : AbstractLambdaGeneratorTest() {
 
   @Test
-  fun generateKotlinLambda() {
+  fun generateBasicKotlinLambda() {
+
     val tag = "kotlin_basic"
     save(
         tag,
-        object : SerializableFunction2<Int, Int, String>() {
-          override fun execute(integer: Int, integer2: Int): String {
-            return MessageFormat.format("{0}", integer + integer2)
-          }
+        create { integer: Int, integer2: Int -> MessageFormat.format("{0}", integer + integer2) })
+  }
+
+  @Test
+  fun generateKotlinLambda() {
+
+    val tag = "kotlin_serializablefunction"
+    save(
+        tag,
+        create { integer: Int, integer2: Int -> MessageFormat.format("{0}", integer + integer2) })
+  }
+
+  @Test
+  fun generateKotlinInputLambda() {
+
+    val tag = "kotlin_serializableinputfunction"
+    save(
+        tag,
+        createInput { integer: Int, integer2: Int ->
+          MessageFormat.format("{0}", integer + integer2)
+        })
+  }
+
+  @Test
+  fun generateKotlinInputOutputLambda() {
+
+    val tag = "kotlin_serializableinputoutputfunction"
+    save(
+        tag,
+        createInputOutput { integer: Int, integer2: Int ->
+          MessageFormat.format("{0}", integer + integer2)
         })
   }
 }

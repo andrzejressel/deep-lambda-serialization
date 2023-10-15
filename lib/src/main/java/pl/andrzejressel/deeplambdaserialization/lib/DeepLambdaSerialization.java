@@ -11,7 +11,7 @@ public class DeepLambdaSerialization {
    * @throws IllegalArgumentException When jar for given function cannot be found
    */
   @NotNull
-  public static URL getJar(SerializableFunctionN serializableFunctionN)
+  public static URL getJar(SerializableFunctionN<?> serializableFunctionN)
       throws IllegalArgumentException {
     var fileName = NameUtils.getJarName(serializableFunctionN);
     var url = serializableFunctionN.getClass().getResource("/META-INF/" + fileName + ".jar");
