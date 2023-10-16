@@ -34,8 +34,7 @@ dependencies {
 val generateSerializatorBuildInfo =
     tasks.register<GenerateSerializatorBuildInfo>("generateSerializatorBuildInfo") {
       dependsOn(":lib:jar")
-      dependencies.set(configurations.runtimeClasspath)
-      //      supportLib.set(fromLib)
+      dependencies.set(configurations.named("testExamplesRuntimeClasspath"))
       output.set(layout.buildDirectory.dir("generated/sources/build_info"))
     }
 
@@ -66,6 +65,10 @@ testing {
 
     val testExamples =
         register<JvmTestSuite>("testExamples") {
+          dependencies {
+            implementation(project(":lib-kotlin"))
+            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+          }
           targets {
             all {
               testTask.configure {

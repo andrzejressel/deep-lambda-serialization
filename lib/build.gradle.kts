@@ -90,15 +90,13 @@ val generateSerializableFunction by
           val getArgumentSerializatorContent =
               alphabet
                   .take(i)
-                  .map { c ->
-                    "                    l.add((Serializator<Object>) getArg${c - 'A' + 1}Serializator());"
-                  }
+                  .map { c -> "                    l.add(getArg${c - 'A' + 1}Serializator());" }
                   .joinToString(separator = "\n")
           val getArgumentsSerializator =
               """
                                 @Override
-                                final public List<Serializator<Object>> getInputSerializators() {
-                                    var l = new ArrayList<Serializator<Object>>();
+                                final public List<Serializator<?>> getInputSerializators() {
+                                    var l = new ArrayList<Serializator<?>>();
                 $getArgumentSerializatorContent
                                     return l;
                                 }
@@ -113,10 +111,10 @@ val generateSerializableFunction by
               """
                                 package pl.andrzejressel.deeplambdaserialization.lib;
                                 
-                                public abstract class SerializableFunction$i<$genericClasses> extends SerializableFunctionN {
+                                public abstract class SerializableFunction$i<$genericClasses> extends SerializableFunctionN<RET> {
                                     public abstract RET execute($arguments);
                                     @Override
-                                    public final Object execute(Object[] args) {
+                                    public final RET execute(Object[] args) {
                                         if (args.length != $i) {
                                             throw new IllegalArgumentException(String.format("Array must have $i ${if (i == 1) "element" else "elements"}, it has %d instead", args.length));
                                         }
@@ -131,10 +129,10 @@ val generateSerializableFunction by
               """
                                 package pl.andrzejressel.deeplambdaserialization.lib;
                                 
-                                public abstract class SerializableFunctionWithContext$i<$contextGenericClasses> extends SerializableFunctionWithContextN<CONTEXT> {
+                                public abstract class SerializableFunctionWithContext$i<$contextGenericClasses> extends SerializableFunctionWithContextN<RET, CONTEXT> {
                                     public abstract RET execute($contextArguments);
                                     @Override
-                                    public final Object execute(CONTEXT context, Object[] args) {
+                                    public final RET execute(CONTEXT context, Object[] args) {
                                         if (args.length != $i) {
                                             throw new IllegalArgumentException(String.format("Array must have $i ${if (i == 1) "element" else "elements"}, it has %d instead", args.length));
                                         }
@@ -153,12 +151,12 @@ val generateSerializableFunction by
                                 import java.util.List;
                                 import pl.andrzejressel.dto.serializator.Serializator;
 
-                                public abstract class SerializableInputFunction$i<$genericClasses> extends SerializableInputFunctionN {
+                                public abstract class SerializableInputFunction$i<$genericClasses> extends SerializableInputFunctionN<RET> {
                                     public abstract RET execute($arguments);
                 $serializatorFields
                 $getArgumentsSerializator
                                     @Override
-                                    public final Object execute(Object[] args) {
+                                    public final RET execute(Object[] args) {
                                         if (args.length != $i) {
                                             throw new IllegalArgumentException(String.format("Array must have $i ${if (i == 1) "element" else "elements"}, it has %d instead", args.length));
                                         }
@@ -177,12 +175,12 @@ val generateSerializableFunction by
                                 import java.util.List;
                                 import pl.andrzejressel.dto.serializator.Serializator;
 
-                                public abstract class SerializableInputFunctionWithContext$i<$contextGenericClasses> extends SerializableInputFunctionWithContextN<CONTEXT> {
+                                public abstract class SerializableInputFunctionWithContext$i<$contextGenericClasses> extends SerializableInputFunctionWithContextN<RET, CONTEXT> {
                                     public abstract RET execute($contextArguments);
                 $serializatorFields
                 $getArgumentsSerializator
                                     @Override
-                                    public final Object execute(CONTEXT context, Object[] args) {
+                                    public final RET execute(CONTEXT context, Object[] args) {
                                         if (args.length != $i) {
                                             throw new IllegalArgumentException(String.format("Array must have $i ${if (i == 1) "element" else "elements"}, it has %d instead", args.length));
                                         }
@@ -201,22 +199,17 @@ val generateSerializableFunction by
                                 import java.util.List;
                                 import pl.andrzejressel.dto.serializator.Serializator;
 
-                                public abstract class SerializableInputOutputFunction$i<$genericClasses> extends SerializableInputOutputFunctionN {
+                                public abstract class SerializableInputOutputFunction$i<$genericClasses> extends SerializableInputOutputFunctionN<RET> {
                                     public abstract RET execute($arguments);
-                                    public abstract Serializator<RET> getReturnSerializator();
                 $serializatorFields
                 $getArgumentsSerializator
                                     @Override
-                                    public final Object execute(Object[] args) {
+                                    public final RET execute(Object[] args) {
                                         if (args.length != $i) {
                                             throw new IllegalArgumentException(String.format("Array must have $i ${if (i == 1) "element" else "elements"}, it has %d instead", args.length));
                                         }
                                         ${if (i != 0) "//noinspection unchecked" else ""}
                                         return execute($arguments2);
-                                    }
-                                    @Override
-                                    public final Serializator<Object> getOutputSerializator() {
-                                        return (Serializator<Object>) getReturnSerializator();
                                     }
                                 }
                 """
@@ -230,22 +223,17 @@ val generateSerializableFunction by
                                 import java.util.List;
                                 import pl.andrzejressel.dto.serializator.Serializator;
 
-                                public abstract class SerializableInputOutputFunctionWithContext$i<$contextGenericClasses> extends SerializableInputOutputFunctionWithContextN<CONTEXT> {
+                                public abstract class SerializableInputOutputFunctionWithContext$i<$contextGenericClasses> extends SerializableInputOutputFunctionWithContextN<RET, CONTEXT> {
                                     public abstract RET execute($contextArguments);
-                                    public abstract Serializator<RET> getReturnSerializator();
                 $serializatorFields
                 $getArgumentsSerializator
                                     @Override
-                                    public final Object execute(CONTEXT context, Object[] args) {
+                                    public final RET execute(CONTEXT context, Object[] args) {
                                         if (args.length != $i) {
                                             throw new IllegalArgumentException(String.format("Array must have $i ${if (i == 1) "element" else "elements"}, it has %d instead", args.length));
                                         }
                                         ${if (i != 0) "//noinspection unchecked" else ""}
                                         return execute($contextArguments2);
-                                    }
-                                    @Override
-                                    public final Serializator<Object> getOutputSerializator() {
-                                        return (Serializator<Object>) getReturnSerializator();
                                     }
                                 }
                 """

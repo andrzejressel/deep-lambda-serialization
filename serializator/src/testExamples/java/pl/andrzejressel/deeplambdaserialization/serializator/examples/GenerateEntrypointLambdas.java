@@ -57,7 +57,7 @@ public class GenerateEntrypointLambdas extends AbstractLambdaGeneratorTest {
       }
 
       @Override
-      public Serializator<String> getReturnSerializator() {
+      public Serializator<String> getOutputSerializator() {
         return StringSerializator.INSTANCE;
       }
 
