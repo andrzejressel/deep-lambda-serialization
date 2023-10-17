@@ -68,7 +68,7 @@ testing {
         register<JvmTestSuite>("testExamples") {
           dependencies {
             implementation(project(":lib-kotlin"))
-            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+            implementation(libs.kotlinx.serialization.json)
           }
           targets {
             all {
