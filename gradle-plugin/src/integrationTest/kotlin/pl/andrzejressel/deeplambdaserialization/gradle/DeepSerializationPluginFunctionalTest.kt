@@ -4,9 +4,11 @@ import java.io.InputStream
 import java.net.URL
 import java.nio.file.Paths
 import java.util.regex.Pattern
-import kotlin.io.path.name
+import kotlin.io.path.createTempDirectory
+import kotlin.io.path.writeText
 import org.assertj.core.api.Assertions.assertThat
 import org.gradle.testkit.runner.GradleRunner
+import org.gradle.testkit.runner.TaskOutcome
 import org.junit.jupiter.api.Test
 import org.zeroturnaround.zip.ZipUtil
 
@@ -31,6 +33,12 @@ class DeepSerializationPluginFunctionalTest {
     val projectName = "basic"
 
     runTest(projectName, expectedClasses)
+  }
+
+  @Test
+  fun serializationTaskCanBeBuildCached() {
+    val projectName = "basic_build_cache"
+    checkIfCachable(projectName, ":deeplambdaserialization")
   }
 
   @Test
@@ -160,6 +168,46 @@ class DeepSerializationPluginFunctionalTest {
     runTest(projectName, expectedClasses)
   }
 
+  @Suppress("SameParameterValue")
+  private fun checkIfCachable(projectName: String, serializerTaskName: String) {
+    val tempDir = createTempDirectory()
+    val dir = Paths.get(javaClass.getResource("/integration.pointer")!!.toURI()).parent
+
+    dir.resolve("projects/$projectName/settings.gradle")
+        .writeText(
+            """
+                  buildCache {
+                      local {
+                          directory '${tempDir.toFile().toURI()}'
+                      }
+                  }
+        """
+                .trimIndent())
+
+    // Run the build
+    val initialResult =
+        GradleRunner.create()
+            .forwardOutput()
+            .withPluginClasspath()
+            .withArguments("clean", serializerTaskName, "--stacktrace", "--build-cache")
+            .withProjectDir(dir.resolve("projects/$projectName").toFile())
+            .withDebug(true)
+            .build()
+
+    assertThat(initialResult.task(serializerTaskName)?.outcome).isEqualTo(TaskOutcome.SUCCESS)
+
+    val secondResult =
+        GradleRunner.create()
+            .forwardOutput()
+            .withPluginClasspath()
+            .withArguments("clean", serializerTaskName, "--stacktrace", "--build-cache")
+            .withProjectDir(dir.resolve("projects/$projectName").toFile())
+            .withDebug(true)
+            .build()
+
+    assertThat(secondResult.task(serializerTaskName)?.outcome).isEqualTo(TaskOutcome.FROM_CACHE)
+  }
+
   private fun runTest(
       projectName: String,
       expectedClasses: Map<String, Set<String>>,
@@ -170,7 +218,7 @@ class DeepSerializationPluginFunctionalTest {
         GradleRunner.create()
             .forwardOutput()
             .withPluginClasspath()
-            .withArguments("clean", "run", "--stacktrace")
+            .withArguments("clean", "run", "--stacktrace", "--build-cache")
             .withProjectDir(dir.resolve("projects/$projectName").toFile())
             .withDebug(true)
             .build()
