@@ -2,9 +2,9 @@ package pl.andrzejressel.deeplambdaserialization.serializator.examples
 
 import java.text.MessageFormat
 import org.junit.jupiter.api.Test
-import pl.andrzejressel.deeplambdadeserialization.libkotlin.create
-import pl.andrzejressel.deeplambdadeserialization.libkotlin.createInput
-import pl.andrzejressel.deeplambdadeserialization.libkotlin.createInputOutput
+import pl.andrzejressel.deeplambdaserialization.libkotlin.create
+import pl.andrzejressel.deeplambdaserialization.libkotlin.createInput
+import pl.andrzejressel.deeplambdaserialization.libkotlin.createInputOutput
 
 class GenerateKotlinLambdas : AbstractLambdaGeneratorTest() {
 

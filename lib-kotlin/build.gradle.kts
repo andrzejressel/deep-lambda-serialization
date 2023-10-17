@@ -49,21 +49,34 @@ val generateSerializableFunction by
         val alphabet = 'A'..'Z'
 
         val functions =
-            (0..22).flatMap { i ->
+            (0..alphabet.count()).flatMap { i ->
               val typeVariables = alphabet.take(i).map { TypeVariableName(it.toString()) }
+              val contextTypeVariable = TypeVariableName("CONTEXT")
               val retTypeVariable = TypeVariableName("RET")
               val serializableFunctionResult =
                   ClassName.bestGuess(
                           "pl.andrzejressel.deeplambdaserialization.lib.SerializableFunction${i}")
                       .parameterizedBy(typeVariables + retTypeVariable)
+              val serializableFunctionWithContextResult =
+                  ClassName.bestGuess(
+                          "pl.andrzejressel.deeplambdaserialization.lib.SerializableFunctionWithContext${i}")
+                      .parameterizedBy(typeVariables + contextTypeVariable + retTypeVariable)
               val serializableInputFunctionResult =
                   ClassName.bestGuess(
                           "pl.andrzejressel.deeplambdaserialization.lib.SerializableInputFunction${i}")
                       .parameterizedBy(typeVariables + retTypeVariable)
+              val serializableInputFunctionWithContextResult =
+                  ClassName.bestGuess(
+                          "pl.andrzejressel.deeplambdaserialization.lib.SerializableInputFunctionWithContext${i}")
+                      .parameterizedBy(typeVariables + contextTypeVariable + retTypeVariable)
               val serializableInputOutputFunctionResult =
                   ClassName.bestGuess(
                           "pl.andrzejressel.deeplambdaserialization.lib.SerializableInputOutputFunction${i}")
                       .parameterizedBy(typeVariables + retTypeVariable)
+              val serializableInputOutputFunctionWithContextResult =
+                  ClassName.bestGuess(
+                          "pl.andrzejressel.deeplambdaserialization.lib.SerializableInputOutputFunctionWithContext${i}")
+                      .parameterizedBy(typeVariables + contextTypeVariable + retTypeVariable)
 
               val serializator =
                   ClassName.bestGuess("pl.andrzejressel.dto.serializator.Serializator")
@@ -80,6 +93,19 @@ val generateSerializableFunction by
                             ParameterSpec(it.lowercase(), TypeVariableName(it.toString()))
                           })
                       .addStatement("return f(${alphabet.take(i).joinToString { it.lowercase() }})")
+                      .build()
+
+              val executeWithContextFunction =
+                  FunSpec.builder("execute")
+                      .addModifiers(KModifier.OVERRIDE)
+                      .returns(retTypeVariable)
+                      .addParameter("context", contextTypeVariable)
+                      .addParameters(
+                          alphabet.take(i).map {
+                            ParameterSpec(it.lowercase(), TypeVariableName(it.toString()))
+                          })
+                      .addStatement(
+                          "return f(${(listOf("context") + alphabet.take(i).map { it.lowercase() }).joinToString()})")
                       .build()
 
               val functionInputSerializatorFunction =
@@ -106,6 +132,12 @@ val generateSerializableFunction by
                       .addFunction(executeFunction)
                       .build()
 
+              val serializableWithContextFunction =
+                  TypeSpec.anonymousClassBuilder()
+                      .superclass(serializableFunctionWithContextResult)
+                      .addFunction(executeWithContextFunction)
+                      .build()
+
               val serializableInputFunction =
                   TypeSpec.anonymousClassBuilder()
                       .superclass(serializableInputFunctionResult)
@@ -113,10 +145,25 @@ val generateSerializableFunction by
                       .addFunctions(functionInputSerializatorFunction)
                       .build()
 
+              val serializableInputWithContextFunction =
+                  TypeSpec.anonymousClassBuilder()
+                      .superclass(serializableInputFunctionWithContextResult)
+                      .addFunction(executeWithContextFunction)
+                      .addFunctions(functionInputSerializatorFunction)
+                      .build()
+
               val serializableInputOutputFunction =
                   TypeSpec.anonymousClassBuilder()
                       .superclass(serializableInputOutputFunctionResult)
                       .addFunction(executeFunction)
+                      .addFunctions(functionInputSerializatorFunction)
+                      .addFunction(getOutputSerializatorFunction)
+                      .build()
+
+              val serializableInputOutputWithContextFunction =
+                  TypeSpec.anonymousClassBuilder()
+                      .superclass(serializableInputOutputFunctionWithContextResult)
+                      .addFunction(executeWithContextFunction)
                       .addFunctions(functionInputSerializatorFunction)
                       .addFunction(getOutputSerializatorFunction)
                       .build()
@@ -137,6 +184,25 @@ val generateSerializableFunction by
                       .returns(serializableFunctionResult)
                       .addStatement("return %L", serializableFunction)
                       .build(),
+                  FunSpec.builder("createWithContext")
+                      .addModifiers(KModifier.INLINE)
+                      .addParameter(
+                          ParameterSpec.builder(
+                                  "f",
+                                  LambdaTypeName.get(
+                                      parameters =
+                                          (listOf(contextTypeVariable) + typeVariables).map {
+                                            ParameterSpec.unnamed(it)
+                                          },
+                                      returnType = retTypeVariable))
+                              .addModifiers(KModifier.CROSSINLINE)
+                              .build())
+                      .addTypeVariables(typeVariables)
+                      .addTypeVariable(contextTypeVariable)
+                      .addTypeVariable(retTypeVariable)
+                      .returns(serializableFunctionWithContextResult)
+                      .addStatement("return %L", serializableWithContextFunction)
+                      .build(),
                   FunSpec.builder("createInput")
                       .addModifiers(KModifier.INLINE)
                       .addParameter(
@@ -151,6 +217,25 @@ val generateSerializableFunction by
                       .addTypeVariable(retTypeVariable)
                       .returns(serializableInputFunctionResult)
                       .addStatement("return %L", serializableInputFunction)
+                      .build(),
+                  FunSpec.builder("createInputWithContext")
+                      .addModifiers(KModifier.INLINE)
+                      .addParameter(
+                          ParameterSpec.builder(
+                                  "f",
+                                  LambdaTypeName.get(
+                                      parameters =
+                                          (listOf(contextTypeVariable) + typeVariables).map {
+                                            ParameterSpec.unnamed(it)
+                                          },
+                                      returnType = retTypeVariable))
+                              .addModifiers(KModifier.CROSSINLINE)
+                              .build())
+                      .addTypeVariables(typeVariables.map { it.copy(reified = true) })
+                      .addTypeVariable(contextTypeVariable)
+                      .addTypeVariable(retTypeVariable)
+                      .returns(serializableInputFunctionWithContextResult)
+                      .addStatement("return %L", serializableInputWithContextFunction)
                       .build(),
                   FunSpec.builder("createInputOutput")
                       .addModifiers(KModifier.INLINE)
@@ -167,12 +252,31 @@ val generateSerializableFunction by
                       .returns(serializableInputOutputFunctionResult)
                       .addStatement("return %L", serializableInputOutputFunction)
                       .build(),
+                  FunSpec.builder("createInputOutputWithContext")
+                      .addModifiers(KModifier.INLINE)
+                      .addParameter(
+                          ParameterSpec.builder(
+                                  "f",
+                                  LambdaTypeName.get(
+                                      parameters =
+                                          (listOf(contextTypeVariable) + typeVariables).map {
+                                            ParameterSpec.unnamed(it)
+                                          },
+                                      returnType = retTypeVariable))
+                              .addModifiers(KModifier.CROSSINLINE)
+                              .build())
+                      .addTypeVariables(typeVariables.map { it.copy(reified = true) })
+                      .addTypeVariable(contextTypeVariable)
+                      .addTypeVariable(retTypeVariable.copy(reified = true))
+                      .returns(serializableInputOutputFunctionWithContextResult)
+                      .addStatement("return %L", serializableInputOutputWithContextFunction)
+                      .build(),
               )
             }
 
         val file =
             FileSpec.builder(
-                    "pl.andrzejressel.deeplambdadeserialization.libkotlin", "SerializableFunction")
+                    "pl.andrzejressel.deeplambdaserialization.libkotlin", "SerializableFunction")
                 .also { fspec -> functions.forEach { fspec.addFunction(it) } }
                 .build()
 
