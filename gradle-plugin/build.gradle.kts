@@ -40,8 +40,6 @@ gradlePlugin {
 @Suppress("UnstableApiUsage")
 testing {
   suites {
-    val test by getting(JvmTestSuite::class)
-
     register<JvmTestSuite>("integrationTest") {
       dependencies {
         implementation(gradleTestKit())
@@ -54,14 +52,13 @@ testing {
         all {
           testTask.configure {
             dependsOn(":lib:publishToMavenLocal")
-            shouldRunAfter(test)
           }
         }
       }
     }
 
     withType<JvmTestSuite> {
-      targets { all { testTask.configure { maxHeapSize = "8g" } } }
+      targets { all { testTask.configure { maxHeapSize = "4g" } } }
       dependencies {
         implementation(project())
         implementation(project(":lib"))

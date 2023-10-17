@@ -62,8 +62,6 @@ mavenPublishing {
 @Suppress("UnstableApiUsage")
 testing {
   suites {
-    val test by getting(JvmTestSuite::class)
-
     val testExamples =
         register<JvmTestSuite>("testExamples") {
           dependencies {
@@ -73,17 +71,23 @@ testing {
           targets {
             all {
               testTask.configure {
+                outputs.dir(layout.buildDirectory.dir("examples"))
                 minHeapSize = "512m"
                 maxHeapSize = "1024m"
-                shouldRunAfter(":lib:publishToMavenLocal")
-                shouldRunAfter(test)
               }
             }
           }
         }
 
     getByName<JvmTestSuite>("test") {
-      targets { all { testTask.configure { dependsOn(testExamples) } } }
+      targets {
+        all {
+          testTask.configure {
+            inputs.dir(layout.buildDirectory.dir("examples"))
+            dependsOn(testExamples)
+          }
+        }
+      }
     }
 
     withType<JvmTestSuite> {
