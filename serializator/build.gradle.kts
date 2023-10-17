@@ -34,6 +34,7 @@ dependencies {
 val generateSerializatorBuildInfo =
     tasks.register<GenerateSerializatorBuildInfo>("generateSerializatorBuildInfo") {
       dependsOn(":lib:jar")
+      dependsOn(":lib-kotlin:jar")
       dependencies.set(configurations.named("testExamplesRuntimeClasspath"))
       output.set(layout.buildDirectory.dir("generated/sources/build_info"))
     }
