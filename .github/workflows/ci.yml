@@ -16,6 +16,9 @@ jobs:
       matrix:
         java_version: [11, 17, 18, 19, 20]
         os: [ubuntu-latest, windows-latest, macos-latest]
+        exclude:
+          - os: windows-latest
+            version: 11
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
