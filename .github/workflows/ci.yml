@@ -27,6 +27,11 @@ jobs:
       with:
         java-version: ${{ matrix.java_version }}
         distribution: 'temurin'
+    - name: configure Pagefile
+      uses: al-cheb/configure-pagefile-action@v1.2
+      if: matrix.os == 'windows-latest'
+      with:
+        minimum-size: 6GB
     - name: Build with Gradle
       uses: gradle/gradle-build-action@v2.9.0
       with:
