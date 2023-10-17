@@ -30,7 +30,6 @@ jobs:
         arguments: |
           check
           --scan
-          -Porg.gradle.jvmargs=-Xmx2048M
     - name: Upload coverage reports to Codecov
       if: matrix.os == 'ubuntu-latest' && matrix.java_version == '11'
       uses: codecov/codecov-action@v3

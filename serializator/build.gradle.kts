@@ -72,6 +72,8 @@ testing {
           targets {
             all {
               testTask.configure {
+                minHeapSize = "512m"
+                maxHeapSize = "1024m"
                 shouldRunAfter(":lib:publishToMavenLocal")
                 shouldRunAfter(test)
               }
