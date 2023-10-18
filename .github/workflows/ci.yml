@@ -28,7 +28,7 @@ jobs:
         java-version: ${{ matrix.java_version }}
         distribution: 'temurin'
     - name: configure Pagefile
-      uses: al-cheb/configure-pagefile-action@v1.2
+      uses: al-cheb/configure-pagefile-action@v1.3
       if: matrix.os == 'windows-latest'
       with:
         minimum-size: 6GB
