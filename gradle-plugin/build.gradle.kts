@@ -48,13 +48,7 @@ testing {
 
       gradlePlugin.testSourceSets(this.sources)
 
-      targets {
-        all {
-          testTask.configure {
-            dependsOn(":lib:publishToMavenLocal")
-          }
-        }
-      }
+      targets { all { testTask.configure { dependsOn(":lib:publishToMavenLocal") } } }
     }
 
     withType<JvmTestSuite> {
