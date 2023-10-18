@@ -71,9 +71,9 @@ testing {
           targets {
             all {
               testTask.configure {
+                outputs.cacheIf { true }
                 outputs.dir(layout.buildDirectory.dir("examples"))
-                minHeapSize = "512m"
-                maxHeapSize = "1024m"
+                maxHeapSize = "2g"
               }
             }
           }
@@ -95,7 +95,7 @@ testing {
         all {
           testTask.configure {
             testLogging { events(TestLogEvent.PASSED, TestLogEvent.SKIPPED, TestLogEvent.FAILED) }
-            maxHeapSize = "8g"
+            maxHeapSize = "2g"
           }
         }
       }
