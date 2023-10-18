@@ -38,6 +38,7 @@ mavenPublishing {
 
 val generateSerializableFunction by
     tasks.registering {
+      outputs.cacheIf { true }
       outputs.dir(layout.buildDirectory.dir("generated/sources/serializable_function_kt"))
       doLast {
         val dir = outputs.files.single().toPath()

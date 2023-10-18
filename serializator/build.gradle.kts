@@ -111,10 +111,11 @@ testing {
   }
 }
 
+@CacheableTask
 abstract class GenerateSerializatorBuildInfo : DefaultTask() {
-  @get:InputFiles abstract val dependencies: ListProperty<File>
+  @get:InputFiles @get:Classpath abstract val dependencies: ListProperty<File>
 
-  @get:InputFiles abstract val supportLib: ListProperty<File>
+  @get:InputFiles @get:Classpath abstract val supportLib: ListProperty<File>
 
   @get:OutputDirectory abstract val output: DirectoryProperty
 
