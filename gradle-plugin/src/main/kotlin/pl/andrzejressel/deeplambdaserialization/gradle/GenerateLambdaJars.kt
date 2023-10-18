@@ -4,16 +4,14 @@ import java.io.File
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.provider.ListProperty
-import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputFiles
-import org.gradle.api.tasks.OutputDirectory
-import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.*
 import pl.andrzejressel.deeplambdaserialization.serializator.LambdaSerializator
 
+@CacheableTask
 abstract class GenerateLambdaJars : DefaultTask() {
-  @get:InputFiles abstract val allClasses: ListProperty<File>
-  @get:InputFiles abstract val dependencies: ListProperty<File>
-  @get:InputFiles abstract val classes: ListProperty<File>
+  @get:InputFiles @get:Classpath abstract val allClasses: ListProperty<File>
+  @get:InputFiles @get:Classpath abstract val dependencies: ListProperty<File>
+  @get:InputFiles @get:Classpath abstract val classes: ListProperty<File>
   @get:Input abstract val additionalProguardOptions: ListProperty<String>
   @get:OutputDirectory abstract val output: DirectoryProperty
 
