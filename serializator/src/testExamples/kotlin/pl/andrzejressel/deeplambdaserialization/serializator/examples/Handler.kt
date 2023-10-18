@@ -28,35 +28,19 @@ abstract class AbstractLambdaGeneratorTest {
   }
 
   private fun createLambdaSerializator(): LambdaSerializator {
-    val javaClzDir: Path =
-        BuildInfo.location.resolve("build/classes/java/testExamples").toAbsolutePath()
-    val kotlinClzDir: Path =
+    val javaClzDir = BuildInfo.location.resolve("build/classes/java/testExamples").toAbsolutePath()
+    val kotlinClzDir =
         BuildInfo.location.resolve("build/classes/kotlin/testExamples").toAbsolutePath()
-    val dependencies: String = BuildInfo.dependencies
-    val supportLib: String = BuildInfo.supportLib
-
     val classPath =
-        dependencies
-            .split(",")
-            .asSequence()
-            .map { Paths.get(it) }
-            .distinct()
-            .filterNot { it.toString().contains("groovy") }
-            .filterNot { it.toString().contains("gradle-worker.jar") }
-            .filterNot { it.last().toString().contains("gradle") }
-            .filterNot { it.toString().contains("bytebuddy") }
-            .filterNot { it.toString().contains("log4j") }
-            .filterNot { it.toString().contains("wrapper") }
-            .toSet()
-
-    val supportLibList =
-        supportLib.split(",").filter { it.isNotEmpty() }.map { Paths.get(it) }.toSet()
+        BuildInfo.dependencies.split(",").filter { it.isNotEmpty() }.map { Paths.get(it) }.toSet()
+    val supportLib =
+        BuildInfo.supportLib.split(",").filter { it.isNotEmpty() }.map { Paths.get(it) }.toSet()
 
     val applicationClassPath = setOf(javaClzDir, kotlinClzDir)
 
     return LambdaSerializator(
         classPath,
-        supportLibList,
+        supportLib,
         applicationClassPath,
         Paths.get("build", "examples", "jars"),
         Paths.get("build", "tmp", "examples", "jars"),
