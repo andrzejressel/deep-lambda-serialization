@@ -9,18 +9,13 @@ plugins {
   kotlin("plugin.serialization") version "1.9.10"
 }
 
-buildscript {
-  dependencies {
-    classpath("com.squareup:kotlinpoet:1.14.2")
-    classpath("com.facebook:ktfmt:0.46")
-  }
-}
+buildscript { dependencies { classpath(libs.kotlinpoet) } }
 
 repositories { mavenCentral() }
 
 dependencies {
   api(project(":lib"))
-  compileOnly("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+  compileOnly(libs.kotlinx.serialization.json)
 }
 
 val mvnGroupId = parent!!.group.toString()
