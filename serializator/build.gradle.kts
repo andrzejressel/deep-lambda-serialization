@@ -68,7 +68,7 @@ testing {
         register<JvmTestSuite>("testExamples") {
           dependencies {
             implementation(project(":lib-kotlin"))
-            implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
+            implementation(libs.kotlinx.serialization.json)
           }
           targets {
             all {
@@ -107,10 +107,11 @@ testing {
   }
 }
 
+@CacheableTask
 abstract class GenerateSerializatorBuildInfo : DefaultTask() {
-  @get:InputFiles abstract val dependencies: ListProperty<File>
+  @get:InputFiles @get:Classpath abstract val dependencies: ListProperty<File>
 
-  @get:InputFiles abstract val supportLib: ListProperty<File>
+  @get:InputFiles @get:Classpath abstract val supportLib: ListProperty<File>
 
   @get:OutputDirectory abstract val output: DirectoryProperty
 

@@ -35,6 +35,7 @@ tasks.test {
 val generateBuildInfo by
     tasks.registering {
       inputs.property("version", parent!!.version)
+      outputs.cacheIf { true }
       outputs.dir(layout.buildDirectory.dir("generated/sources/build_info"))
       doLast {
         val dir = outputs.files.single().toPath()
@@ -58,6 +59,7 @@ val generateBuildInfo by
 
 val generateSerializableFunction by
     tasks.registering {
+      outputs.cacheIf { true }
       outputs.dir(layout.buildDirectory.dir("generated/sources/serializable_function"))
       doLast {
         val dir = outputs.files.single().toPath()
