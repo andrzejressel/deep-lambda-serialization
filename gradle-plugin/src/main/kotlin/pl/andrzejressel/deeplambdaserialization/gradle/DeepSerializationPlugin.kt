@@ -62,6 +62,7 @@ class DeepSerializationPlugin : Plugin<Project> {
               .map { it.id.componentIdentifier }
               .filterIsInstance<ProjectComponentIdentifier>()
               .map { it.projectPath }
+              .filter { it != ":" }
               .map { "$it:jar" }
         }
 
