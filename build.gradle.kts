@@ -1,3 +1,4 @@
+import com.diffplug.gradle.spotless.SpotlessExtension
 import com.palantir.gradle.gitversion.VersionDetails
 import groovy.lang.Closure
 
@@ -27,7 +28,7 @@ version =
       "DEV-SNAPSHOT"
     }
 
-configure<com.diffplug.gradle.spotless.SpotlessExtension> {
+configure<SpotlessExtension> {
   kotlinGradle {
     target("*.gradle.kts") // default target for kotlinGradle
     ktfmt() // or ktfmt() or prettier()
@@ -36,7 +37,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
 
 subprojects {
   afterEvaluate {
-    configure<com.diffplug.gradle.spotless.SpotlessExtension> {
+    configure<SpotlessExtension> {
       kotlin {
         target("src/**/*.kt")
         ktfmt()
