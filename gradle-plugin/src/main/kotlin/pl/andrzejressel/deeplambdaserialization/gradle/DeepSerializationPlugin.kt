@@ -58,12 +58,16 @@ class DeepSerializationPlugin : Plugin<Project> {
 
     val subprojectsJarProjects =
         allClasses.map { configuration ->
-          configuration.resolvedConfiguration.resolvedArtifacts
-              .map { it.id.componentIdentifier }
-              .filterIsInstance<ProjectComponentIdentifier>()
-              .map { it.projectPath }
-              .filter { it != ":" }
-              .map { "$it:jar" }
+          val p =
+              configuration.resolvedConfiguration.resolvedArtifacts
+                  .asSequence()
+                  .map { it.id.componentIdentifier }
+                  .filterIsInstance<ProjectComponentIdentifier>()
+                  .map { it.buildTreePath }
+                  .filter { project.findProject(it) != null }
+                  .map { "$it:jar" }
+                  .toList()
+          p
         }
 
     val generateJars =

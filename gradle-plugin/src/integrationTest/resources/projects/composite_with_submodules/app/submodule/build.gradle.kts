@@ -1,12 +1,13 @@
 plugins {
-  kotlin("jvm") version "1.9.10"
   application
   id("pl.andrzejressel.deeplambdaserialization")
 }
+
+application { mainClass.set("com.test.composite.Main") }
+
+dependencies { implementation("aressel:lib") }
 
 repositories {
   mavenCentral()
   mavenLocal()
 }
-
-application { mainClass.set("com.example.project.MainKt") }
