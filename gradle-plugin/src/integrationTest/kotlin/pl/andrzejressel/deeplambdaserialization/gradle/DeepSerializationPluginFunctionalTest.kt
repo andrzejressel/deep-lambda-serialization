@@ -187,6 +187,25 @@ class DeepSerializationPluginFunctionalTest {
     runTest(projectName, expectedClasses)
   }
 
+  @Test
+  fun canRunAsPartOfCompositeBuildWithSubmodules() {
+    val expectedClasses =
+        mapOf(
+            "com.test.composite.Main$1.jar" to
+                setOf(
+                    "com/test/composite/Main.class",
+                    "com/test/composite/Main$1.class",
+                    "com/test/lib/SharedLib.class",
+                    "pl/andrzejressel/deeplambdaserialization/entrypoint/EntryPoint.class",
+                    "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunction.class",
+                    "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunction0.class",
+                    "pl/andrzejressel/deeplambdaserialization/lib/SerializableFunctionN.class",
+                    "META-INF/MANIFEST.MF"))
+    val projectName = "composite_with_submodules"
+
+    runTest(projectName, expectedClasses)
+  }
+
   @Suppress("SameParameterValue")
   private fun checkIfCachable(projectName: String, serializerTaskName: String) {
     val tempDir = createTempDirectory()

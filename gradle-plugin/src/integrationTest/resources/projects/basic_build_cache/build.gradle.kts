@@ -7,5 +7,3 @@ repositories {
   mavenCentral()
   mavenLocal()
 }
-
-dependencies { implementation("pl.andrzejressel.deeplambdaserialization:lib:DEV-SNAPSHOT") }
