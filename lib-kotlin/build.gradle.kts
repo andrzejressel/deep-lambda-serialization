@@ -6,7 +6,7 @@ plugins {
   alias(libs.plugins.kotlin)
   alias(libs.plugins.spotless)
   alias(libs.plugins.maven.publish)
-  kotlin("plugin.serialization") version "1.9.10"
+  kotlin("plugin.serialization") version "1.9.20"
 }
 
 buildscript { dependencies { classpath(libs.kotlinpoet) } }
