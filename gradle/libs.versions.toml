@@ -2,7 +2,7 @@
 # Must match version used by Gradle
 # https://docs.gradle.org/current/userguide/compatibility.html
 kotlin = { strictly = "1.9.10" }
-junit = "5.10.0"
+junit = "5.10.1"
 assertj = "3.24.2"
 ztzip = "1.16"
 proguard = "7.4.0"
