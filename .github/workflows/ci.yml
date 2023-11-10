@@ -20,8 +20,6 @@ jobs:
           - os: windows-latest
             java_version: 11
     runs-on: ${{ matrix.os }}
-    env:
-      AWS_DEFAULT_REGION: eu-central-1
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK ${{ matrix.java_version }}
