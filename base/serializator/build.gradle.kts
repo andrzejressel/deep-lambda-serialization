@@ -1,6 +1,8 @@
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import pl.andrzejressel.deeplambdaserialization.build.ChildPlugin.Companion.License
+import pl.andrzejressel.deeplambdaserialization.build.ChildPlugin.Companion.childSetup
 
 plugins {
   `java-library`
@@ -10,6 +12,8 @@ plugins {
   alias(libs.plugins.spotless)
   alias(libs.plugins.maven.publish)
 }
+
+childSetup(License.GPL)
 
 repositories { mavenCentral() }
 
@@ -45,20 +49,6 @@ project.tasks.named("compileJava") { mustRunAfter(generateSerializatorBuildInfo)
 val mvnGroupId = parent!!.group.toString()
 val mvnArtifactId = name
 val mvnVersion = parent!!.version.toString()
-
-mavenPublishing {
-  coordinates(mvnGroupId, mvnArtifactId, mvnVersion)
-
-  pom {
-    licenses {
-      license {
-        name = "The GNU General Public License v3.0"
-        url = "https://www.gnu.org/licenses/gpl-3.0.txt"
-        distribution = "https://www.gnu.org/licenses/gpl-3.0.txt"
-      }
-    }
-  }
-}
 
 @Suppress("UnstableApiUsage")
 testing {

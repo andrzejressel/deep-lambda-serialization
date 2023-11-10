@@ -1,5 +1,7 @@
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import pl.andrzejressel.deeplambdaserialization.build.ChildPlugin.Companion.License
+import pl.andrzejressel.deeplambdaserialization.build.ChildPlugin.Companion.childSetup
 
 plugins {
   jacoco
@@ -8,6 +10,8 @@ plugins {
   alias(libs.plugins.maven.publish)
   kotlin("plugin.serialization") version "1.9.20"
 }
+
+childSetup(License.LGPL)
 
 buildscript { dependencies { classpath(libs.kotlinpoet) } }
 
@@ -281,6 +285,8 @@ val generateSerializableFunction by
     }
 
 sourceSets { main { kotlin { srcDirs(generateSerializableFunction) } } }
+
+ext { set("LICENCE", "LGPL") }
 
 tasks.jacocoTestReport {
   dependsOn("test")

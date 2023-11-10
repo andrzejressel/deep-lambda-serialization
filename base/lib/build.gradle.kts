@@ -6,6 +6,8 @@ import kotlin.io.path.writeText
 import org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED
 import org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED
+import pl.andrzejressel.deeplambdaserialization.build.ChildPlugin.Companion.License
+import pl.andrzejressel.deeplambdaserialization.build.ChildPlugin.Companion.childSetup
 
 plugins {
   `java-library`
@@ -14,6 +16,8 @@ plugins {
   alias(libs.plugins.spotless)
   alias(libs.plugins.maven.publish)
 }
+
+childSetup(License.LGPL)
 
 buildscript { dependencies { classpath("com.palantir.javaformat:palantir-java-format:2.38.0") } }
 
@@ -268,24 +272,6 @@ val generateSerializableFunction by
     }
 
 sourceSets { main { java { srcDirs(generateSerializableFunction, generateBuildInfo) } } }
-
-val mvnGroupId = parent!!.group.toString()
-val mvnArtifactId = name
-val mvnVersion = parent!!.version.toString()
-
-mavenPublishing {
-  coordinates(mvnGroupId, mvnArtifactId, mvnVersion)
-
-  pom {
-    licenses {
-      license {
-        name = "Gnu Lesser General Public License"
-        url = "http://www.gnu.org/licenses/lgpl.txt"
-        distribution = "http://www.gnu.org/licenses/lgpl.txt"
-      }
-    }
-  }
-}
 
 tasks.jacocoTestReport {
   reports {

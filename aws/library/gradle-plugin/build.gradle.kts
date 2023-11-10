@@ -1,6 +1,8 @@
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import pl.andrzejressel.deeplambdaserialization.build.ChildPlugin.Companion.License
+import pl.andrzejressel.deeplambdaserialization.build.ChildPlugin.Companion.childSetup
 
 plugins {
   `java-gradle-plugin`
@@ -11,17 +13,13 @@ plugins {
   alias(libs.plugins.maven.publish)
 }
 
-repositories { mavenCentral() }
+childSetup(License.GPL)
 
 configurations { create("customCompileOnly") { isTransitive = true } }
 
-val mvnGroupId = parent!!.group.toString()
-val mvnArtifactId = name
-val mvnVersion = parent!!.version.toString()
-
 dependencies {
-  add("customCompileOnly", "pl.andrzejressel.deeplambdaserialization:gradle-plugin:$mvnVersion")
-  compileOnly("pl.andrzejressel.deeplambdaserialization:gradle-plugin:$mvnVersion")
+  add("customCompileOnly", "pl.andrzejressel.deeplambdaserialization:gradle-plugin:$version")
+  compileOnly("pl.andrzejressel.deeplambdaserialization:gradle-plugin:$version")
 }
 
 tasks.test {
@@ -32,7 +30,7 @@ tasks.test {
 gradlePlugin {
   val deeplambdaserializationaws by
       plugins.creating {
-        version = mvnVersion
+        version = project.version
         id = "pl.andrzejressel.deeplambdaserialization.aws"
         implementationClass =
             "pl.andrzejressel.deeplambdaserialization.aws.gradle.DeepSerializationAWSPlugin"
@@ -95,20 +93,6 @@ testing {
 }
 
 publishing { repositories { mavenLocal() } }
-
-mavenPublishing {
-  coordinates(mvnGroupId, mvnArtifactId, mvnVersion)
-
-  pom {
-    licenses {
-      license {
-        name = "Gnu Lesser General Public License"
-        url = "http://www.gnu.org/licenses/lgpl.txt"
-        distribution = "http://www.gnu.org/licenses/lgpl.txt"
-      }
-    }
-  }
-}
 
 @Suppress("UnstableApiUsage")
 tasks.named("check") {

@@ -1,14 +1,21 @@
+import pl.andrzejressel.deeplambdaserialization.build.ChildPlugin.Companion.License
+import pl.andrzejressel.deeplambdaserialization.build.ChildPlugin.Companion.childSetup
+
 plugins {
   `java-library`
   alias(libs.plugins.spotless)
   alias(libs.plugins.maven.publish)
 }
 
+childSetup(License.GPL)
+
 repositories { mavenCentral() }
 
 val mvnGroupId = parent!!.group.toString()
 val mvnArtifactId = name
 val mvnVersion = parent!!.version.toString()
+
+ext { set("LICENCE", "LGPL") }
 
 mavenPublishing {
   coordinates(mvnGroupId, mvnArtifactId, mvnVersion)

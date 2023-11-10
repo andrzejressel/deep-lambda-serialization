@@ -7,6 +7,8 @@ import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeSpec
 import com.squareup.javapoet.TypeVariableName
 import javax.lang.model.element.Modifier
+import pl.andrzejressel.deeplambdaserialization.build.ChildPlugin.Companion.License
+import pl.andrzejressel.deeplambdaserialization.build.ChildPlugin.Companion.childSetup
 
 plugins {
   `java-library`
@@ -14,16 +16,14 @@ plugins {
   alias(libs.plugins.spotless)
 }
 
-buildscript { dependencies { classpath(libs.javapoet) } }
+childSetup(License.LGPL)
 
-val mvnGroupId = parent!!.group.toString()
-val mvnArtifactId = name
-val mvnVersion = parent!!.version.toString()
+buildscript { dependencies { classpath(libs.javapoet) } }
 
 dependencies {
   implementation(libs.pulumi)
   implementation(libs.jetbrains.annotations)
-  implementation("pl.andrzejressel.deeplambdaserialization:lib:$mvnVersion")
+  implementation("pl.andrzejressel.deeplambdaserialization:lib:$version")
 }
 
 val generateSerializableFunction by
@@ -91,23 +91,4 @@ val generateSerializableFunction by
 
 sourceSets { main { java { srcDirs(generateSerializableFunction) } } }
 
-mavenPublishing {
-  coordinates(mvnGroupId, mvnArtifactId, mvnVersion)
-
-  pom {
-    licenses {
-      license {
-        name = "Gnu Lesser General Public License"
-        url = "http://www.gnu.org/licenses/lgpl.txt"
-        distribution = "http://www.gnu.org/licenses/lgpl.txt"
-      }
-    }
-  }
-}
-
 tasks.test { useJUnitPlatform() }
-
-repositories {
-  mavenCentral()
-  maven { url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots") }
-}

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
 package com.test.composite;
 
 import com.test.lib.SharedLib;

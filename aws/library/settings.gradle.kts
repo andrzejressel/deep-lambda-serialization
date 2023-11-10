@@ -14,4 +14,6 @@ includeBuild("../../base") {
 
 rootProject.name = "deep-lambda-serialization-aws"
 
+includeBuild("../../plugin")
+
 include("handler", "lib", "gradle-plugin")
