@@ -20,8 +20,6 @@ jobs:
           - os: windows-latest
             java_version: 11
     runs-on: ${{ matrix.os }}
-    env:
-      AWS_DEFAULT_REGION: eu-central-1
     steps:
     - uses: actions/checkout@v4
     - name: Set up JDK ${{ matrix.java_version }}
@@ -37,11 +35,18 @@ jobs:
     - name: Build base
       uses: gradle/gradle-build-action@v2.9.0
       with:
-        arguments: |
-          check
-          --scan
-          --no-daemon
+        arguments: check --scan
         build-root-directory: base
+    - name: Build aws/library
+      uses: gradle/gradle-build-action@v2.9.0
+      with:
+        arguments: check --scan
+        build-root-directory: aws/library
+    - name: Build aws/integration-test
+      uses: gradle/gradle-build-action@v2.9.0
+      with:
+        arguments: check --scan
+        build-root-directory: aws/integration-test
     - name: Upload coverage reports to Codecov
       if: matrix.os == 'ubuntu-latest' && matrix.java_version == '11'
       uses: codecov/codecov-action@v3

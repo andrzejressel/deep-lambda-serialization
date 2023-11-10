@@ -2,3 +2,4 @@
 build
 gradle-plugin/**/integrationTest/**/gradle
 /.idea
+bin

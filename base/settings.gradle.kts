@@ -9,6 +9,10 @@ if (!System.getenv("CI").isNullOrEmpty()) {
   }
 }
 
+dependencyResolutionManagement {
+  versionCatalogs { create("libs") { from(files("../gradle/libs.versions.toml")) } }
+}
+
 rootProject.name = "deep-lambda-serialization"
 
 include(":gradle-plugin", ":lib", ":serializator", ":entrypoint", ":lib-kotlin")

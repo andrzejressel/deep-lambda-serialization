@@ -14,6 +14,8 @@ git-version = "3.0.0"
 maven-publish = "0.25.3"
 kotlinpoet = "1.14.2"
 kotlinx-serialization-json = "1.6.0"
+javapoet = "1.13.0"
+pulumi = "0.9.4"
 
 [libraries]
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
@@ -28,6 +30,8 @@ jetbrains-annotations = { module = "org.jetbrains:annotations", version.ref = "j
 dto-serializator = { module = "pl.andrzejressel.dto:serializator", version.ref = "dto-serializator" }
 kotlinpoet = { module = "com.squareup:kotlinpoet", version.ref = "kotlinpoet" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+javapoet = { module = "com.squareup:javapoet", version.ref = "javapoet" }
+pulumi = { module = "com.pulumi:pulumi", version.ref = "pulumi" }
 
 [bundles]
 
