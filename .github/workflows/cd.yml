@@ -34,7 +34,7 @@ jobs:
         build-root-directory: aws/library
     - name: AWS integration tests
       run: kotlin run.main.kts
-      working-directory: aws/integration-test-example
+      working-directory: aws/integration-test/example
     - name: Deploy base
       uses: gradle/gradle-build-action@v2.9.0
       with:
