@@ -44,7 +44,7 @@ jobs:
     - name: Deploy base
       uses: gradle/gradle-build-action@v2.9.0
       with:
-        arguments: check
+        arguments: publishAllPublicationsToMavenCentral
         build-root-directory: base
       env:
         ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
@@ -54,7 +54,7 @@ jobs:
     - name: Deploy AWS
       uses: gradle/gradle-build-action@v2.9.0
       with:
-        arguments: check
+        arguments: publishAllPublicationsToMavenCentral
         build-root-directory: aws/library    
       env:
         ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}

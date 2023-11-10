@@ -1,12 +1,3 @@
-pluginManagement {
-  repositories {
-    mavenCentral()
-    //    mavenLocal()
-    gradlePluginPortal()
-    maven { url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots") }
-  }
-}
-
 plugins { id("com.gradle.enterprise") version ("3.15.1") }
 
 if (!System.getenv("CI").isNullOrEmpty()) {
@@ -19,11 +10,6 @@ if (!System.getenv("CI").isNullOrEmpty()) {
 }
 
 dependencyResolutionManagement {
-  repositories {
-    mavenCentral()
-    //    mavenLocal()
-    maven { url = uri("https://s01.oss.sonatype.org/content/repositories/snapshots") }
-  }
   versionCatalogs { create("libs") { from(files("../gradle/libs.versions.toml")) } }
 }
 
