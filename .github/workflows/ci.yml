@@ -16,7 +16,6 @@ jobs:
       matrix:
         java_version: [11, 17, 20]
         os: [ubuntu-latest, windows-latest, macos-latest]
-        subproject: ["base", "aws/library", "aws/integration-test"]
         exclude:
           - os: windows-latest
             java_version: 11
@@ -42,7 +41,23 @@ jobs:
           check
           --scan
           --no-daemon
-        build-root-directory: ${{ matrix.subproject }}
+        build-root-directory: base
+    - name: Build aws/library
+      uses: gradle/gradle-build-action@v2.9.0
+      with:
+        arguments: |
+          check
+          --scan
+          --no-daemon
+        build-root-directory: aws/library
+    - name: Build aws/integration-test
+      uses: gradle/gradle-build-action@v2.9.0
+      with:
+        arguments: |
+          check
+          --scan
+          --no-daemon
+        build-root-directory: aws/integration-test
     - name: Upload coverage reports to Codecov
       if: matrix.os == 'ubuntu-latest' && matrix.java_version == '11'
       uses: codecov/codecov-action@v3
