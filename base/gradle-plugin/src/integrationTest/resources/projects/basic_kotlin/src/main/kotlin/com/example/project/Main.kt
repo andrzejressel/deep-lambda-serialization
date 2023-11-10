@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
 package com.example.project
 
 import pl.andrzejressel.deeplambdaserialization.lib.DeepLambdaSerialization

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-2.0-or-later
 package pl.andrzejressel.deeplambdaserialization.serializator
 
 import java.lang.invoke.MethodHandle

@@ -1,4 +1,6 @@
 import org.gradle.api.tasks.testing.logging.TestLogEvent
+import pl.andrzejressel.deeplambdaserialization.buildplugin.ChildPlugin.Companion.License
+import pl.andrzejressel.deeplambdaserialization.buildplugin.ChildPlugin.Companion.childSetup
 
 plugins {
   `java-gradle-plugin`
@@ -8,6 +10,8 @@ plugins {
   alias(libs.plugins.spotless)
   alias(libs.plugins.maven.publish)
 }
+
+childSetup(License.GPL)
 
 repositories { mavenCentral() }
 
@@ -60,22 +64,6 @@ testing {
         implementation(libs.commons.lang3)
       }
       useJUnitJupiter()
-    }
-  }
-}
-
-publishing { repositories { mavenLocal() } }
-
-mavenPublishing {
-  coordinates(mvnGroupId, mvnArtifactId, mvnVersion)
-
-  pom {
-    licenses {
-      license {
-        name = "Gnu Lesser General Public License"
-        url = "http://www.gnu.org/licenses/lgpl.txt"
-        distribution = "http://www.gnu.org/licenses/lgpl.txt"
-      }
     }
   }
 }

@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: LGPL-3.0-or-later
 package pl.andrzejressel.deeplambdaserialization.aws.handler
 
 import com.amazonaws.services.lambda.runtime.Context
