@@ -37,6 +37,7 @@ val generateSerializatorBuildInfo =
       dependsOn(":lib-kotlin:jar")
       dependencies.set(configurations.named("testExamplesRuntimeClasspath"))
       output.set(layout.buildDirectory.dir("generated/sources/build_info"))
+      projectDir.set(project.projectDir.absolutePath)
     }
 
 project.tasks.named("compileJava") { mustRunAfter(generateSerializatorBuildInfo) }
@@ -117,6 +118,8 @@ abstract class GenerateSerializatorBuildInfo : DefaultTask() {
 
   @get:InputFiles @get:Classpath abstract val supportLib: ListProperty<File>
 
+  @get:Input abstract val projectDir: Property<String>
+
   @get:OutputDirectory abstract val output: DirectoryProperty
 
   @TaskAction
@@ -131,7 +134,7 @@ abstract class GenerateSerializatorBuildInfo : DefaultTask() {
                 import java.nio.file.Paths;
 
                 public class BuildInfo {
-                    public static final Path location = Paths.get("${project.projectDir.toString().replace("\\","\\\\")}");
+                    public static final Path location = Paths.get("${projectDir.get().replace("\\","\\\\")}");
                     public static final String dependencies = "${(dependencies.get() - supportLib.get().toSet()).joinToString(
                 ",",
             ).replace("\\","\\\\")}";
