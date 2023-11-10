@@ -7,8 +7,8 @@ import com.squareup.javapoet.ParameterizedTypeName
 import com.squareup.javapoet.TypeSpec
 import com.squareup.javapoet.TypeVariableName
 import javax.lang.model.element.Modifier
-import pl.andrzejressel.deeplambdaserialization.build.ChildPlugin.Companion.License
-import pl.andrzejressel.deeplambdaserialization.build.ChildPlugin.Companion.childSetup
+import pl.andrzejressel.deeplambdaserialization.buildplugin.ChildPlugin.Companion.License
+import pl.andrzejressel.deeplambdaserialization.buildplugin.ChildPlugin.Companion.childSetup
 
 plugins {
   `java-library`

@@ -1,5 +1,5 @@
 // https://github.com/pulumi/pulumi-java/pull/1231
-import pl.andrzejressel.deeplambdaserialization.build.ChildPlugin;
+import pl.andrzejressel.deeplambdaserialization.buildplugin.ChildPlugin;
 
 plugins {
 	id 'org.jetbrains.kotlin.jvm'

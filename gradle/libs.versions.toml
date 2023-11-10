@@ -44,5 +44,5 @@ kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 git-version = {id = "com.palantir.git-version", version.ref = "git-version"}
 maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "maven-publish" }
-parent = { id = "pl.andrzejressel.deeplambdaserialization.build.parent", version = "UNKNOWN" }
-child = { id = "pl.andrzejressel.deeplambdaserialization.build.child", version = "UNKNOWN" }
+parent = { id = "pl.andrzejressel.deeplambdaserialization.buildplugin.parent", version = "UNKNOWN" }
+child = { id = "pl.andrzejressel.deeplambdaserialization.buildplugin.child", version = "UNKNOWN" }

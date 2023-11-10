@@ -1,6 +1,6 @@
 import pl.andrzejressel.deeplambdaserialization.aws.gradle.DeepSerializationAWSPlugin
-import pl.andrzejressel.deeplambdaserialization.build.ChildPlugin.Companion.License
-import pl.andrzejressel.deeplambdaserialization.build.ChildPlugin.Companion.childSetup
+import pl.andrzejressel.deeplambdaserialization.buildplugin.ChildPlugin.Companion.License
+import pl.andrzejressel.deeplambdaserialization.buildplugin.ChildPlugin.Companion.childSetup
 import pl.andrzejressel.deeplambdaserialization.gradle.DeepSerializationPlugin
 
 plugins {

@@ -1,5 +1,5 @@
-import pl.andrzejressel.deeplambdaserialization.build.ChildPlugin.Companion.License
-import pl.andrzejressel.deeplambdaserialization.build.ChildPlugin.Companion.childSetup
+import pl.andrzejressel.deeplambdaserialization.buildplugin.ChildPlugin.Companion.License
+import pl.andrzejressel.deeplambdaserialization.buildplugin.ChildPlugin.Companion.childSetup
 
 plugins {
   kotlin("jvm")

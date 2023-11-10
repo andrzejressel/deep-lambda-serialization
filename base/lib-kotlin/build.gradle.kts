@@ -1,7 +1,7 @@
 import com.squareup.kotlinpoet.*
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import pl.andrzejressel.deeplambdaserialization.build.ChildPlugin.Companion.License
-import pl.andrzejressel.deeplambdaserialization.build.ChildPlugin.Companion.childSetup
+import pl.andrzejressel.deeplambdaserialization.buildplugin.ChildPlugin.Companion.License
+import pl.andrzejressel.deeplambdaserialization.buildplugin.ChildPlugin.Companion.childSetup
 
 plugins {
   jacoco

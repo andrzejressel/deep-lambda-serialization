@@ -10,12 +10,12 @@ plugins {
 gradlePlugin {
   plugins {
     create("parentPlugin") {
-      id = "pl.andrzejressel.deeplambdaserialization.build.parent"
-      implementationClass = "pl.andrzejressel.deeplambdaserialization.build.ParentPlugin"
+      id = "pl.andrzejressel.deeplambdaserialization.buildplugin.parent"
+      implementationClass = "pl.andrzejressel.deeplambdaserialization.buildplugin.ParentPlugin"
     }
     create("childPlugin") {
-      id = "pl.andrzejressel.deeplambdaserialization.build.child"
-      implementationClass = "pl.andrzejressel.deeplambdaserialization.build.ChildPlugin"
+      id = "pl.andrzejressel.deeplambdaserialization.buildplugin.child"
+      implementationClass = "pl.andrzejressel.deeplambdaserialization.buildplugin.ChildPlugin"
     }
   }
 }

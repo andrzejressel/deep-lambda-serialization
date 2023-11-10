@@ -1,8 +1,8 @@
 import kotlin.io.path.createDirectories
 import kotlin.io.path.writeText
 import org.gradle.api.tasks.testing.logging.TestLogEvent
-import pl.andrzejressel.deeplambdaserialization.build.ChildPlugin.Companion.License
-import pl.andrzejressel.deeplambdaserialization.build.ChildPlugin.Companion.childSetup
+import pl.andrzejressel.deeplambdaserialization.buildplugin.ChildPlugin.Companion.License
+import pl.andrzejressel.deeplambdaserialization.buildplugin.ChildPlugin.Companion.childSetup
 
 plugins {
   `java-gradle-plugin`
