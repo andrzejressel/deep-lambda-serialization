@@ -11,6 +11,7 @@ import javax.lang.model.element.Modifier
 plugins {
   `java-library`
   alias(libs.plugins.maven.publish)
+  alias(libs.plugins.spotless)
 }
 
 buildscript { dependencies { classpath(libs.javapoet) } }

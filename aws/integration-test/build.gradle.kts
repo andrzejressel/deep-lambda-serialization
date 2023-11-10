@@ -36,7 +36,6 @@ configure<SpotlessExtension> {
 }
 
 subprojects {
-  /*
   afterEvaluate {
     configure<SpotlessExtension> {
       kotlin {
@@ -59,7 +58,6 @@ subprojects {
       }
     }
   }
-  */
 }
 
 allprojects { repositories { mavenCentral() } }

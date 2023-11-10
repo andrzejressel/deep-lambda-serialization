@@ -7,6 +7,7 @@ plugins {
   `kotlin-dsl`
   `jvm-test-suite`
   jacoco
+  alias(libs.plugins.spotless)
   alias(libs.plugins.maven.publish)
 }
 

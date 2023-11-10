@@ -14,6 +14,7 @@ buildscript {
 }
 
 apply<DeepSerializationPlugin>()
+
 apply<DeepSerializationAWSPlugin>()
 
 dependencies {

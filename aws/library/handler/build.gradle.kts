@@ -1,6 +1,7 @@
 plugins {
   kotlin("jvm")
   alias(libs.plugins.maven.publish)
+  alias(libs.plugins.spotless)
 }
 
 val mvnGroupId = parent!!.group.toString()
