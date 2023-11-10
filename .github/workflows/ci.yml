@@ -16,6 +16,7 @@ jobs:
       matrix:
         java_version: [11, 17, 20]
         os: [ubuntu-latest, windows-latest, macos-latest]
+        subproject: ["base", "aws/library", "aws/integration-test"]
         exclude:
           - os: windows-latest
             java_version: 11
@@ -41,7 +42,7 @@ jobs:
           check
           --scan
           --no-daemon
-        build-root-directory: base
+        build-root-directory: ${{ matrix.subproject }}
     - name: Upload coverage reports to Codecov
       if: matrix.os == 'ubuntu-latest' && matrix.java_version == '11'
       uses: codecov/codecov-action@v3
