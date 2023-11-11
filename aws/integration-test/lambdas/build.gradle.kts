@@ -6,7 +6,7 @@ import pl.andrzejressel.deeplambdaserialization.gradle.DeepSerializationPlugin
 plugins {
   kotlin("jvm")
   alias(libs.plugins.spotless)
-  kotlin("plugin.serialization") version "1.9.10"
+  kotlin("plugin.serialization") version "1.9.20"
   alias(libs.plugins.maven.publish)
 }
 
