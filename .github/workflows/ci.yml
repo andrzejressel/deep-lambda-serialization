@@ -14,8 +14,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        java_version: [11, 17, 18, 19, 20, 21]
+        java_version: [11, 17, 21]
         os: [ubuntu-latest, windows-latest, macos-latest]
+        exclude:
+          - os: windows-latest
+            java_version: 11
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
@@ -24,12 +27,33 @@ jobs:
       with:
         java-version: ${{ matrix.java_version }}
         distribution: 'temurin'
-    - name: Build with Gradle
+    - name: configure Pagefile
+      uses: al-cheb/configure-pagefile-action@v1.3
+      if: matrix.os == 'windows-latest'
+      with:
+        minimum-size: 6GB
+    - name: Build plugin
       uses: gradle/gradle-build-action@v2.9.0
       with:
-        arguments: check
+        arguments: check --scan
+        build-root-directory: plugin
+    - name: Build base
+      uses: gradle/gradle-build-action@v2.9.0
+      with:
+        arguments: check --scan
+        build-root-directory: base
+    - name: Build aws/library
+      uses: gradle/gradle-build-action@v2.9.0
+      with:
+        arguments: check --scan
+        build-root-directory: aws/library
+    - name: Build aws/integration-test
+      uses: gradle/gradle-build-action@v2.9.0
+      with:
+        arguments: check --scan
+        build-root-directory: aws/integration-test
     - name: Upload coverage reports to Codecov
       if: matrix.os == 'ubuntu-latest' && matrix.java_version == '11'
       uses: codecov/codecov-action@v3
-      env:
-        CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      with:
+        fail_ci_if_error: true

@@ -1,0 +1,23 @@
+// https://github.com/pulumi/pulumi-java/pull/1231
+import pl.andrzejressel.deeplambdaserialization.buildplugin.ChildPlugin;
+
+plugins {
+	id 'org.jetbrains.kotlin.jvm'
+	alias(libs.plugins.spotless)
+	id 'application'
+	alias(libs.plugins.maven.publish)
+}
+
+ChildPlugin.@Companion.childSetupGPL(project)
+
+dependencies {
+	implementation(project(":lambdas"))
+	implementation("org.virtuslab:pulumi-kotlin:0.9.4.0")
+	implementation("org.virtuslab:pulumi-aws-kotlin:6.6.0.0")
+	implementation("pl.andrzejressel.deeplambdaserialization.aws:lib:${version}")
+	implementation("pl.andrzejressel.deeplambdaserialization:lib:${version}")
+}
+
+tasks.test { useJUnitPlatform() }
+
+application { mainClass.set("MainKt") }
