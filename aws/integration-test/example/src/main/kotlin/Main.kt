@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
+// SPDX-License-Identifier: GPL-3.0-or-later
 import com.pulumi.aws.iam.kotlin.IamFunctions.getRole
 import com.pulumi.aws.iam.kotlin.outputs.GetRoleResult
 import com.pulumi.aws.lambda.kotlin.function
