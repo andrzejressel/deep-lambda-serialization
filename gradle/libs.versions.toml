@@ -15,7 +15,7 @@ maven-publish = "0.25.3"
 kotlinpoet = "1.14.2"
 kotlinx-serialization-json = "1.6.0"
 javapoet = "1.13.0"
-pulumi = "0.9.4"
+pulumi = "0.9.8"
 
 [libraries]
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
