@@ -11,7 +11,7 @@ class ChildPlugin : Plugin<Project> {
   companion object {
 
     enum class License(val spdxId: String) {
-      GPL("GPL-2.0-or-later"),
+      GPL("GPL-3.0-or-later"),
       LGPL("LGPL-3.0-or-later")
     }
 
@@ -62,15 +62,15 @@ class ChildPlugin : Plugin<Project> {
             when (license) {
               License.GPL ->
                   license {
-                    name = "The GNU General Public License v2.0"
-                    url = "https://www.gnu.org/licenses/gpl-2.0.txt"
-                    distribution = "https://www.gnu.org/licenses/gpl-2.0.txt"
+                    name = "The GNU General Public License"
+                    url = "https://www.gnu.org/licenses/gpl-3.0.txt"
+                    distribution = "https://www.gnu.org/licenses/gpl-3.0.txt"
                   }
               License.LGPL ->
                   license {
                     name = "Gnu Lesser General Public License"
-                    url = "http://www.gnu.org/licenses/lgpl.txt"
-                    distribution = "http://www.gnu.org/licenses/lgpl.txt"
+                    url = "https://www.gnu.org/licenses/lgpl-3.0.txt"
+                    distribution = "https://www.gnu.org/licenses/lgpl-3.0.txt"
                   }
             }
           }
