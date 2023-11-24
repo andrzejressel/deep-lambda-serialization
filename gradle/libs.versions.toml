@@ -5,7 +5,7 @@ kotlin = { strictly = "1.9.10" }
 junit = "5.10.1"
 assertj = "3.24.2"
 ztzip = "1.16"
-proguard = "7.4.0"
+proguard = "7.4.1"
 commonslang3 = "3.14.0"
 jetbrains-annotations = "24.1.0"
 dto-serializator = "0.0.3"
