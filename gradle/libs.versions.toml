@@ -3,7 +3,7 @@
 # https://docs.gradle.org/current/userguide/compatibility.html
 kotlin = { strictly = "1.9.10" }
 junit = "5.10.1"
-assertj = "3.25.0"
+assertj = "3.25.1"
 ztzip = "1.16"
 proguard = "7.4.1"
 commonslang3 = "3.14.0"
