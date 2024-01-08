@@ -46,7 +46,7 @@ configure<SpotlessExtension> {
     importOrder()
     removeUnusedImports()
     cleanthat()
-    palantirJavaFormat().style("GOOGLE")
+    palantirJavaFormat("2.38.0").style("GOOGLE")
     target("src/**/*.java")
     endWithNewline()
   }
