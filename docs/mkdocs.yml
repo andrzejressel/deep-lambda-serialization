@@ -1,0 +1,14 @@
+site_name: Deep lambda serialization
+theme:
+  name: readthedocs
+  highlightjs: true
+  hljs_languages:
+    - kotlin
+    - java
+
+nav:
+    - Introduction: index.md
+    - AWS support: AWS.md    
+
+plugins:
+  - search
