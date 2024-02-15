@@ -42,7 +42,7 @@ class ChildPlugin : Plugin<Project> {
           importOrder()
           removeUnusedImports()
           cleanthat()
-          palantirJavaFormat().style("GOOGLE")
+          palantirJavaFormat("2.38.0").style("GOOGLE")
           target("src/**/*.java")
           licenseHeader("// SPDX-License-Identifier: ${license.spdxId}")
           endWithNewline()
